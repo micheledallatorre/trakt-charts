@@ -452,7 +452,7 @@ class Trakt
         "/user/watchlist/movies.json/"   => array(
             array("name" => "username")
         ),
-  	/* MDT added */
+		/* MDT added */
 		"/user/ratings/movies.json/"   => array(
             array("name" => "username")
         ),
@@ -657,28 +657,29 @@ function array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
 
 
 function tableArray($array) {
-	echo "<table border=\"1\">";    
+	$text = "<table id=\"myTable\" class=\"tablesorter\" border=\"0\" cellpadding=\"0\" cellspacing=\"1\">\n"; 
 	for($i=0;$i<count($array);$i++)
 	{
 		$elem = $array[$i];
 		// print th
 		if ($i == 0) {
-			echo "<tr>";
+			$text = $text .  "<thead>\n<tr>\n";
 			// print first colum
-			echo "<th>counter</th>";
+			$text = $text .  "<th>counter</th>\n";
 			foreach ($elem as $key => $value) {
-				echo "<th>". $key. "</th>";
+				$text = $text .  "<th>". trim($key) . "</th>\n";
 			}
-			echo "</tr>";
+			$text = $text .  "</tr>\n</thead>\n<tbody>\n";
 		}
-		echo "<tr>";
+
+		$text = $text .  "<tr>\n";
 
 		$rownumber = $i+1;
 		// print row number in first cell
-		echo "<td>". $rownumber ."</td>";
+		$text = $text .  "<td>". $rownumber ."</td>\n";
 		//print_r($elem);
 		foreach ($elem as $key => $value) {
-			echo "<td>";
+			$text = $text .  "<td>";
 			//if it is an array 
 			// i.e. images or genres
 			if (is_array($value)) {
@@ -688,13 +689,18 @@ function tableArray($array) {
 					foreach ($myimages as $k1 => $v1) {
 						// if poster print image
 						if (strcmp($k1, "poster") == 0) {		
-							echo "<a href=\"" . $v1 . "\">";
-							echo "<img src=\"" . $v1 . "\" width=\"100px\" height=\"150px\">";
-							echo "</a>";
+							$text = $text .  "<a href=\"" . $v1 . "\">";
+							$text = $text .  "<img src=\"" . $v1 . "\" width=\"100px\" height=\"150px\">";
+							$text = $text .  "</a>";
 						}
 						// if fanart
 						elseif (strcmp($k1, "fanart") == 0) {
 							//do nothing
+							/*
+							$text = $text .  "<a href=\"" . $v1 . "\">";
+							$text = $text .  "<img src=\"" . $v1 . "\" width=\"100px\" height=\"150px\">";
+							$text = $text .  "</a>";
+							*/
 						}						
 					}					
 
@@ -704,56 +710,64 @@ function tableArray($array) {
 				elseif (strcmp($key, "genres") == 0) {
 					$mygenres = $value;
 					foreach ($mygenres as $k2 => $v2) {
-						echo "<a href=\"http://trakt.tv/movies/popular/" . $v2 .  "\">" . $v2 . "</a>";
-						echo "<br/>";
+						$text = $text .  "<a href=\"http://trakt.tv/movies/popular/" . $v2 .  "\">" . $v2 . "</a>";
+						$text = $text .  "<br/>";
 					}						
 				}
 			}
 			else {
+				// if timestamp 
+				if (strcmp($key, "inserted") == 0) {					
+					$text = $text . date("Y-m-d H:i:s", $value);
+				}
 				// if url
-				if (strcmp($key, "url") == 0) {
-					echo "<a href=\"" . $value . "\">". $value . "</a>";
+				elseif (strcmp($key, "url") == 0) {
+					$text = $text .  "<a href=\"" . $value . "\">". $value . "</a>";
 					}
 				// if imdb ID
 				elseif (strcmp($key, "imdb_id") == 0) {
-					echo "<a href=\"http://www.imdb.com/title/" . $value .  "\">" . $value . "</a>";
+					$text = $text .  "<a href=\"http://www.imdb.com/title/" . $value .  "\">" . $value . "</a>";
 					}
 				// if tmdb ID
 				elseif (strcmp($key, "tmdb_id") == 0) {
-					echo "<a href=\"http://www.themoviedb.org/movie/" . $value .  "\">" . $value . "</a>";
-				}
-				elseif (strcmp($key, "images") == 0) {
-					echo "XXX";
+					$text = $text .  "<a href=\"http://www.themoviedb.org/movie/" . $value .  "\">" . $value . "</a>";
 				}
 				else
-					echo $value;
+					$text = $text .  $value;
 			}
-			echo "</td>";
+			$text = $text .  "</td>\n";
 		}	
-		echo "</tr>";
+		$text = $text .  "</tr>\n";
 	}
-	echo "</table>";
+	$text = $text .  "</tbody>\n";
+	$text = $text .  "</table>\n";
+	
+	return $text;
 }
 
-echo "<html><body>";
-
+/***** READING CONFIG PARAMETERS ********/
 $myconfig = include('config.php');
 $myAPIkey = $myconfig['config']['APIkey'];
 $myuser = $myconfig['config']['user'];
+$mypass = $myconfig['config']['pass'];
+/****************************************/
+
+$content = "";
+
 
 $trakt = new Trakt($myAPIkey);
-//$trakt->setAuth("username", "password");
+// set TRUE because pass is already hash1
+$trakt->setAuth($myuser, $mypass, true);
 
 //$tmp = $trakt->showSeasons("The Walking Dead", true);
 //$tmp = $trakt->userLastactivity("mdt");
+
 $mymovies = $trakt->userLibraryMoviesAll($myuser);
 $myratings = $trakt->userRatingsMovies($myuser);
-echo "<h1>Seen ". count($mymovies) ." movies</h1>";
 array_sort_by_column($mymovies, 'tmdb_id');
 //echo (tableArray($mymovies));
 //echo (show_php($mymovies));
 
-echo "<h1>Rated ". count($myratings) ." movies</h1>";
 array_sort_by_column($myratings, 'tmdb_id');
 //echo (tableArray($myratings));
 
@@ -782,8 +796,30 @@ for ($i=0; $i<count($myratings); $i++) {
 	}
 	
 }
-echo (tableArray($result));
-echo (show_php($result));
-echo "</body></html>";
-
+$content = tableArray($result);
+//echo (show_php($result));
 ?>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="jquery.tablesorter.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="themes/blue/style.css" type="text/css" media="print, projection, screen" />
+		
+		<script type="text/javascript" charset="utf-8">
+							$(document).ready(function() 
+							{ 
+								$("#myTable").tablesorter(); 
+									} 
+							); 
+		</script>
+	</head>
+	<body id="index">		
+		<div id="pagetitle">
+		<? echo "<h1>Rated ". count($myratings) ."/". count($mymovies) ." seen movies</h1>"; ?>
+		</div>	
+		<br/>	
+		<? echo $content; ?>	
+	</body>
+</html>
+
