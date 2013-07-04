@@ -815,7 +815,7 @@ $content = tableArray($result);
 		<!-- including https://code.google.com/p/php-class-for-google-chart-tools/ -->
 		<?php		
 			include('Chart.php');
-			$chart = new Chart('ColumnChart');
+
 			// OUTPUT: 
 			/*$data = array(
 					'cols' => array(
@@ -830,15 +830,73 @@ $content = tableArray($result);
 					)
 			); 
 						$chart->load(json_encode($data));*/
-			$data = array(
+
+			/* create data array for graph movies/ratings */
+			$movies_per_rating = array();
+			$movies_years = array();
+			$movies_per_month = array();
+			$movies_per_day = array();
+			$movies_per_hour = array();
+			
+			for ($i=0; $i<count($result); $i++) {
+				$myrating = $result[$i]['rating_advanced'];
+				$myyear = $result[$i]['year'];
+				// timestamp of when the movie was rated, not seen!
+				$mytimestamp = $result[$i]['inserted'];
+				$mymonth = date("M", $mytimestamp);
+				$mygenres = $result[$i]['genres'];
+				$myday = date("D", $mytimestamp);
+				$myhour = date("H", $mytimestamp);
+				
+				$movies_per_rating[$myrating] += 1;
+				$movies_years[$myyear] += 1;
+				$movies_per_month[$mymonth] += 1;
+				$movies_per_day[$myday] += 1;
+				$movies_per_hour[$myhour] += 1;
+			}
+			//echo (show_php($movies_per_month));
+			
+			/****************** FUNCTION createGraphData *************************/
+			/* creates array for graph, such as
+				$data = array(
 					array('Rating', '# of movies'),
 					array('Rate: 6', 8),
 					array('Rate: 7', 12)
-			);
-			$chart->load($data, 'array');
+				);
+			*/
+			/* INPUT: data label xaxis, data label yaxis, array with data to be printed, e.g.
+				[array]
+					"6"=>[integer]=[4]
+					"7"=>[integer]=[3]
+					"8"=>[integer]=[3]
+					"10"=>[integer]=[5]
+			*/
+			function createGraphData ($label1, $label2, $mydata) {
+				// return array
+				$res = array();
+				// create array of labels
+				$labels = array($label1, $label2);
+				// add labels array as first row of res array
+				$res[0] = $labels;
+				$count = 1;
+				// for each x-y value in my data array
+				foreach ($mydata as $k => $v) {
+					// create array
+					$row = array();
+					// add key and value as a couple of values to be printed
+					$row[0] = $k;
+					$row[1] = $v;
+					// add values, as array, to the res array from row1 (row0 is labels array!)
+					$res[$count++] = $row;
+				}
+				return $res;
+			}		
 
+			$chart = new Chart('ColumnChart');			
+			$data = createGraphData('ratings','# of movies', $movies_per_rating);
+			$chart->load($data, 'array');
 			$options = array(
-				'title' => 'Movies per rating', 
+				'title' => 'Rating distribution', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
 				'hAxis' => array('title' => 'Ratings'),
 				'legend' => 'none',														
@@ -847,12 +905,84 @@ $content = tableArray($result);
 				'height' => 400,
 				'colors' => array('red')
 				);
-			echo $chart->draw('my_chart', $options);
+			echo $chart->draw('chart_movies_per_rating', $options);
+			
+			
+			
+			/********* graph 2******************/
+			$chart = new Chart('ColumnChart');			
+			$data = createGraphData('year','# of movies', $movies_years);
+			$chart->load($data, 'array');
+			$options = array(
+				'title' => 'Year of production for movies', 
+				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
+				'hAxis' => array('title' => 'Year'),
+				'legend' => 'none',														
+				'is3D' => true, 
+				'width' => 500, 
+				'height' => 400,
+				'colors' => array('blue')
+				);
+			echo $chart->draw('chart_movies_years', $options);
+			
+			
+			/********* graph 3******************/
+			$chart = new Chart('ColumnChart');			
+			$data = createGraphData('month','# of movies', $movies_per_month);
+			$chart->load($data, 'array');
+			$options = array(
+				'title' => 'Movies seen per month', 
+				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
+				'hAxis' => array('title' => 'Month'),
+				'legend' => 'none',														
+				'is3D' => true, 
+				'width' => 500, 
+				'height' => 400,
+				'colors' => array('purple')
+				);
+			echo $chart->draw('chart_movies_per_month', $options);		
+			
+			/********* graph 4******************/
+			$chart = new Chart('ColumnChart');			
+			$data = createGraphData('day','# of movies', $movies_per_day);
+			$chart->load($data, 'array');
+			$options = array(
+				'title' => 'Movies seen per day', 
+				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
+				'hAxis' => array('title' => 'Day'),
+				'legend' => 'none',														
+				'is3D' => true, 
+				'width' => 500, 
+				'height' => 400,
+				'colors' => array('purple')
+				);
+			echo $chart->draw('chart_movies_per_day', $options);	
+			
+			/********* graph 5******************/
+			$chart = new Chart('ColumnChart');			
+			$data = createGraphData('hour','# of movies', $movies_per_hour);
+			$chart->load($data, 'array');
+			$options = array(
+				'title' => 'Movies seen per hour', 
+				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
+				'hAxis' => array('title' => 'Hour'),
+				'legend' => 'none',														
+				'is3D' => true, 
+				'width' => 500, 
+				'height' => 400,
+				'colors' => array('purple')
+				);
+			echo $chart->draw('chart_movies_per_hour', $options);	
+			
 		?>
 		
 	</head>
 	<body id="index">	
-		<div id="my_chart"></div>	
+		<div id="chart_movies_per_rating"></div>	
+		<div id="chart_movies_years"></div>	
+		<div id="chart_movies_per_month"></div>	
+		<div id="chart_movies_per_day"></div>	
+		<div id="chart_movies_per_hour"></div>	
 		<div id="pagetitle">
 		<? echo "<h1>Rated ". count($myratings) ."/". count($mymovies) ." seen movies</h1>"; ?>
 		</div>		
