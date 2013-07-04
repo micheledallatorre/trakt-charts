@@ -703,8 +703,6 @@ function tableArray($array) {
 							*/
 						}						
 					}					
-
-					//	"<img src=\"" + data[x].images.poster + "\" width=\"100px\" height=\"150px\">";
 				}			
 				// if genres
 				elseif (strcmp($key, "genres") == 0) {
@@ -813,12 +811,36 @@ $content = tableArray($result);
 									} 
 							); 
 		</script>
+		
+		<!-- including https://code.google.com/p/php-class-for-google-chart-tools/ -->
+		<?php
+			include('Chart.php');
+			$chart = new Chart('ColumnChart');
+			// OUTPUT: array, e.g. [['Rating', 'Films'], ['5', 10], ['6', 15], ['10', 3]]
+			$data = array(
+					'cols' => array(
+							array('id' => 'myratings', 'label' => 'Rating', 'type' => 'string'),
+							array('id' => 'number of movies', 'label' => '# of movies', 'type' => 'number')
+					),
+					'rows' => array(
+							array('c' => array(array('v' => 'rating 4'), array('v' => 5))),
+							array('c' => array(array('v' => 'rating 5'), array('v' => 7))),
+							array('c' => array(array('v' => 'rating 7'), array('v' => 1))),
+							array('c' => array(array('v' => 'rating 9'), array('v' => 3)))
+					)
+			);
+			//$chart->load($data, 'array');
+			$chart->load(json_encode($data));
+			$options = array('title' => 'Movies per rating', 'is3D' => true, 'width' => 500, 'height' => 400);
+			echo $chart->draw('my_chart', $options);
+		?>
+		
 	</head>
-	<body id="index">		
+	<body id="index">	
+		<div id="my_chart"></div>	
 		<div id="pagetitle">
 		<? echo "<h1>Rated ". count($myratings) ."/". count($mymovies) ." seen movies</h1>"; ?>
-		</div>	
-		<br/>	
+		</div>		
 		<? echo $content; ?>	
 	</body>
 </html>
