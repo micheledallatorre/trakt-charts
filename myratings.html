@@ -1,0 +1,289 @@
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="jquery.tablesorter.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="themes/blue/style.css" type="text/css" media="print, projection, screen" />
+
+		<!-- google charts API -->
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		
+		<title>MY RATINGS</title>
+		
+		<script type="text/javascript" charset="utf-8">
+		
+		// use this function to get param from URL (e.g. ?user=pippo)
+		$.extend({
+		  getUrlVars: function(){
+			var vars = [], hash;
+			var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+			for(var i = 0; i < hashes.length; i++)
+			{
+			  hash = hashes[i].split('=');
+			  vars.push(hash[0]);
+			  vars[hash[0]] = hash[1];
+			}
+			return vars;
+		  },
+		  getUrlVar: function(name){
+			return $.getUrlVars()[name];
+		  }
+		});
+		
+
+			// array for storing data for Google Chart Ratings
+			var moviesRatings = [];
+			// array for storing data for Google Chart Rated Movies
+			var monthlySeenMovies = [];
+			var monthNames = [ "January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December" ];
+			//initialize 
+			for (var i = 0; i < 12; i++) {
+				monthlySeenMovies[i] = 0;
+			}
+			// array for storing data for Google Chart Movies Years
+			var moviesYear = [];
+		
+
+			$(document).ready(function(){
+				// my API trakt key
+				var myAPIkey = "2cc9ffbe82711dfdff45caef7d030a17";
+			
+				// MANDATORY: USERNAME
+				var myuser = $.getUrlVar('user');
+				// MANDATORY: FLAG for printing movies TXT list or table
+				var show = $.getUrlVar('show');
+				// MANDATORY: either print movies or shows
+				var videotype = $.getUrlVar('type');
+									
+				// counter for number of rated shows/movies
+				var counter = 0;
+								 
+				// failure call
+				if (videotype != "shows" && videotype != "movies") {
+						alert("USAGE: in URL si deve passare USER, SHOW [list/table] e TYPE [movies/shows], opzionale IMAGES [0/1]. Esempio: thispage.html?user=mdt&type=movies&show=table");
+				}
+					
+				// replace call info with user stuff
+				$.ajax({
+					dataType: "jsonp",
+					url: 'http://api.trakt.tv/user/ratings/' + videotype + '.json/'+ myAPIkey + '/' + myuser,
+					success: function(data) {
+					
+						if (show=="list") {
+								//alert(data);
+								var content = ""; 
+								for (var x = 0; x < data.length; x++) {							 
+										content += data[x].title + " " + data[x].rating_advanced + "<br/>";										
+									}
+								$("#myTableDiv").append(content);
+								
+								// set counter
+								setCounter(data.length);							
+								writeTitle();									
+						}
+						else if (show=="table") {
+							var content = "<table id=\"myTable\" class=\"tablesorter\">"; 
+							content += "	<thead>";
+							content += "		<tr>"; 
+							content += "			<th>inserted</th>"; 
+							content += "			<th>rating</th>"; 
+							content += "			<th>rating_advanced</th>";
+							content += "			<th>title</th>";
+							content += "			<th>year</th>";
+							content += "			<th>imdb_id</th>";
+							content += "			<th>tmdb_id</th>";						
+							content += "		</tr>"; 
+							content += "	</thead>"; 	
+							content += "	<tbody>"; 	
+							
+							// set counter
+						    setCounter(data.length);
+							
+							 for (var x = 0; x < data.length; x++) {
+										// create a new javascript Date object based on the timestamp
+										// multiplied by 1000 so that the argument is in milliseconds, not seconds
+										var d = new Date(data[x].inserted*1000);
+																			
+										
+										// store in array for Google Chart
+										var myrating = data[x].rating_advanced;
+										// if is not set
+										if (!moviesRatings[myrating]) {
+											moviesRatings[myrating] = 0
+										}
+										moviesRatings[myrating] += 1;
+										
+										monthlySeenMovies[d.getMonth() -1] += 1;
+											
+										// if is not set, initialize
+										if (!moviesYear[data[x].year]) {
+											moviesYear[data[x].year] = 0
+										}
+										moviesYear[data[x].year] += 1;
+																	
+										content += "<tr>";
+										content += "<td>";
+										// sorting by month does not work (i.e. it sorts by month name!)
+										//content += d.getFullYear() + " " + monthNames[d.getMonth()] + " " + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+										content += d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+										content += "</td>";
+										content += "<td>";
+										content += data[x].rating;								
+										content += "</td>";											
+										content += "<td>";	
+										content += data[x].rating_advanced;
+										content += "</td>"; 
+										content += "<td>";	
+										content += data[x].title;
+										content += "</td>";	
+										content += "<td>";	
+										content += data[x].year;
+										content += "</td>";	
+										content += "<td>";	
+										content += "<a href=\"http://www.imdb.com/title/" + data[x].imdb_id + "\">" + data[x].imdb_id + "</a>";
+										content += "</td>";	
+										content += "<td>";	
+										content += "<a href=\"http://www.themoviedb.org/movie/" + data[x].tmdb_id + "\">" + data[x].tmdb_id + "</a>";
+										content += "</td>";															
+										content += "</tr>";				
+									}						
+							content += "</tbody>"; 	
+							content += "</table>";																
+							$("#myTableDiv").append(content);	
+							$("table").tablesorter({debug: true});						
+							writeTitle();							
+						}
+						else {
+							alert("Pirla! Controlla l'URL: deve essere ?user=mdt&show=list oppure show=table");
+						}			
+					}			
+				});
+				
+				// need this function to update global var counter outside ajax call
+				function setCounter(value) {
+					counter = value;
+					//alert("counter:"+counter+" value:"+value);
+				}
+				
+				
+				// need this function to write html AFTER counter has been updated
+				function writeTitle() {
+					var mypagetitle = "<b>" + myuser + "'s rated " + counter + " " + videotype + "</b>";
+					$("#pagetitle").html(mypagetitle);
+				}
+				
+			})		
+
+				google.load("visualization", "1.0", {packages:["corechart"]});
+				google.setOnLoadCallback(drawChart);
+				
+
+
+				var dataGraph2 = []; 
+				var dataGraph1 = [];
+				var dataGraph3 = [];
+				
+				function printBarChart(graphData, mytitle, Yaxis, Xaxis, width, height, mycolor, cssDivId) {
+							  dataTable = new google.visualization.DataTable();
+					
+							  // determine the number of rows and columns.
+							  var nRows = graphData.length;
+							  var nCols = graphData[0].length;
+							  
+							  // in this case the first column is of type 'string'.
+							  dataTable.addColumn('string', graphData[0][0]);
+
+							  // all other columns are of type 'number'.
+							  for (var i = 1; i < nCols; i++)
+								dataTable.addColumn('number', graphData[0][i]);           
+
+							  // now add the rows.
+							  for (var i = 1; i < nRows; i++)
+								dataTable.addRow(graphData[i]);            
+
+								options = {
+										title: mytitle,
+										vAxis: {title: Yaxis, minValue: 0},
+										hAxis: {title: Xaxis},
+										legend: 'none',
+										width: width, 
+										height: height, 
+										colors: [mycolor]   
+									  };
+							  chart = new google.visualization.ColumnChart(document.getElementById(cssDivId));
+							  // draw the chart.
+							  chart.draw(dataTable, options); 
+				} 
+				
+				function drawChart() {		 
+							//////////////////////////// GRAPH: MOVIES YEAR /////////////////////
+							// build data array for graph
+							  var columnsGraph3 = ["Movies Year", "# of movies"];
+							  	//clean array from UNDEFINED values
+							 //  moviesYear = moviesYear.filter(function(n){return n});	      
+							  dataGraph3 = createData(columnsGraph3, moviesYear);				  
+							  printBarChart(dataGraph3, 'Movies Year', '# of movies', 'Year', 800, 400, 'red', 'moviesYear');
+
+				
+							//////////////////////////// GRAPH: MONTHLY RATED MOVIES /////////////////////
+							// build data array for graph
+							// Example (using  console.log(dataGraph1) in browser with Firebug plugin)
+							// [["Month", "Films"], ["January", 0], ["February", 6], ["March", 3], ["April", 3], ["May", 2], ["June", 0], ["July", 0], ["August", 0], ["September", 0], ["October", 0], ["November", 0], ["December", 0]]
+							  var columnsGraph1 = ["Month", "Films"];
+							  dataGraph1[0] = columnsGraph1;
+							  for (var i = 1; i <= monthlySeenMovies.length; i++) {
+										var monthName = monthNames[i-1];
+										var a = [monthName, monthlySeenMovies[i-1]];
+										// skip months where there are ZERO movies
+										if (monthlySeenMovies[i-1] != 0)
+											dataGraph1[i] = a;
+									}					
+							  //clean array from UNDEFINED values
+							 dataGraph1 = dataGraph1.filter(function(n){return n});
+							  printBarChart(dataGraph1, 'Rated movies', '# of rated movies', 'Month', 800, 400, 'green', 'monthlyGraph');
+
+							  
+								///////////////////// GRAPH: MOVIES RATINGS ////////////////////////
+							  // Example
+							  // [['Rating', 'Films'], ['5', 10], ['6', 15], ['10', 3]]
+							  
+								// column names
+								var columnsGraph2 = ["Rating", "Films"];
+								dataGraph2 = createData(columnsGraph2, moviesRatings);
+								
+							printBarChart(dataGraph2, 'My ratings', '# of movies', 'Rated (out of 10)', 800, 400, 'blue', 'ratingsGraph');
+         
+  
+					
+				}
+			
+
+				// print data for array
+				// INPUT: columns names, data arry
+				// OUTPUT: array, e.g. [['Rating', 'Films'], ['5', 10], ['6', 15], ['10', 3]]
+				function createData(columns, inputarray) {
+					var tmparray = [];
+					tmparray[0] = columns;
+					
+					for (var i = 1; i < inputarray.length; i++) {
+						// if defined (i.e. there are movies rated i)
+						if (typeof inputarray[i] !== 'undefined') {	
+								var a = [i.toString(), inputarray[i]];
+								tmparray[i] = a;
+							}					
+					}
+					//clean array from UNDEFINED values
+					return tmparray = tmparray.filter(function(n){return n});		
+				}	
+				
+		</script>	
+		
+	</head>
+	<body id="index">		
+		<div id="pagetitle"></div>		
+		<div id="myTableDiv"></div>		
+		<div id="moviesYear"></div>
+		<div id="ratingsGraph"></div>
+		<div id="monthlyGraph"></div>
+
+</body></html>
