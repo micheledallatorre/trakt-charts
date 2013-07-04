@@ -837,6 +837,8 @@ $content = tableArray($result);
 			$movies_per_month = array();
 			$movies_per_day = array();
 			$movies_per_hour = array();
+			$movies_per_genre = array();
+			$avg_rating_per_genre = array();
 			
 			for ($i=0; $i<count($result); $i++) {
 				$myrating = $result[$i]['rating_advanced'];
@@ -844,17 +846,36 @@ $content = tableArray($result);
 				// timestamp of when the movie was rated, not seen!
 				$mytimestamp = $result[$i]['inserted'];
 				$mymonth = date("M", $mytimestamp);
-				$mygenres = $result[$i]['genres'];
 				$myday = date("D", $mytimestamp);
 				$myhour = date("H", $mytimestamp);
+				$mygenres = $result[$i]['genres'];
 				
+				foreach ($mygenres as $k => $v) {
+					// discard empty genres!
+					if ($v != "") {
+						$movies_per_genre[$v] += 1;
+						$sum_rating_per_genre[$v] += $myrating;
+					}
+				}				
 				$movies_per_rating[$myrating] += 1;
 				$movies_years[$myyear] += 1;
 				$movies_per_month[$mymonth] += 1;
 				$movies_per_day[$myday] += 1;
 				$movies_per_hour[$myhour] += 1;
 			}
-			//echo (show_php($movies_per_month));
+			//normalize sum of rating per genre to get avg rating
+			foreach ($movies_per_genre as $k1 => $v1) {
+				foreach ($sum_rating_per_genre as $k2 => $v2) {
+					//check the genre is the same
+					if ($k1 == $k2) {
+					// get avg rating per genre
+					$mygenrating = $v2/$v1;
+					$avg_rating_per_genre[$k1] = $mygenrating;
+					}
+				}
+			}
+
+			//echo (show_php($movies_per_genre));
 			
 			/****************** FUNCTION createGraphData *************************/
 			/* creates array for graph, such as
@@ -974,6 +995,39 @@ $content = tableArray($result);
 				);
 			echo $chart->draw('chart_movies_per_hour', $options);	
 			
+			
+			/********* graph 6******************/
+			$chart = new Chart('ColumnChart');			
+			$data = createGraphData('hour','# of movies', $movies_per_genre);
+			$chart->load($data, 'array');
+			$options = array(
+				'title' => 'Most rated genres', 
+				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
+				'hAxis' => array('title' => 'Genre'),
+				'legend' => 'none',														
+				'is3D' => true, 
+				'width' => 500, 
+				'height' => 400,
+				'colors' => array('purple')
+				);
+			echo $chart->draw('chart_movies_per_genre', $options);	
+			
+			
+			/********* graph 7******************/
+			$chart = new Chart('ColumnChart');			
+			$data = createGraphData('genre','avg rating', $avg_rating_per_genre);
+			$chart->load($data, 'array');
+			$options = array(
+				'title' => 'Average rating per genre', 
+				'vAxis' => array('title' => 'Average rating', 'minValue' => 0),
+				'hAxis' => array('title' => 'Genre'),
+				'legend' => 'none',														
+				'is3D' => true, 
+				'width' => 500, 
+				'height' => 400,
+				'colors' => array('purple')
+				);
+			echo $chart->draw('chart_avg_rating_per_genre', $options);	
 		?>
 		
 	</head>
@@ -983,6 +1037,8 @@ $content = tableArray($result);
 		<div id="chart_movies_per_month"></div>	
 		<div id="chart_movies_per_day"></div>	
 		<div id="chart_movies_per_hour"></div>	
+		<div id="chart_movies_per_genre"></div>	
+		<div id="chart_avg_rating_per_genre"></div>	
 		<div id="pagetitle">
 		<? echo "<h1>Rated ". count($myratings) ."/". count($mymovies) ." seen movies</h1>"; ?>
 		</div>		
