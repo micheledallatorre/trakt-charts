@@ -754,7 +754,7 @@ $content = "";
 
 
 $trakt = new Trakt($myAPIkey);
-// set TRUE because pass is already hash1
+// set TRUE if pass is already hash1
 $trakt->setAuth($myuser, $mypass, true);
 
 //$tmp = $trakt->showSeasons("The Walking Dead", true);
@@ -875,6 +875,8 @@ $content = tableArray($result);
 				}
 			}
 
+			 
+  
 			//echo (show_php($movies_per_genre));
 			
 			/****************** FUNCTION createGraphData *************************/
@@ -1041,6 +1043,38 @@ $content = tableArray($result);
 		<div id="chart_avg_rating_per_genre"></div>	
 		<div id="pagetitle">
 		<? echo "<h1>Rated ". count($myratings) ."/". count($mymovies) ." seen movies</h1>"; ?>
+		<h2>Movies seen but not rated:</h2>
+		<? /**** PRINT MOVIES SEEN BUT NOT RATED ****/
+			$seenmovies = array();
+			for ($j=0;$j<count($mymovies);$j++) {
+				$seenmovies[$j] = $mymovies[$j]['title'];
+			}
+
+			$movies_seen_rated = array();
+			for ($i=0;$i<count($seenmovies);$i++) {
+				$rated = false;
+				// TODO: if there are 0 rated movies, it fails!
+				for ($j=0;$j<count($myratings);$j++) {
+					//skip loop, if seen movie has been already found rated
+					//if ($rated) break;
+					if (strcmp($myratings[$j]['title'], $seenmovies[$i]) == 0) {
+						$rated=true;
+						$t =  $seenmovies[$i];
+						$movies_seen_rated[$t] = $rated;
+					}
+					elseif ($j == (count($myratings)-1) && $rated==false) {
+						$t =  $seenmovies[$i];
+						$movies_seen_rated[$t] = $rated;
+					}
+				}
+			}
+			$i=0;
+			foreach ($movies_seen_rated as $k => $v) {
+				if ($v == false)
+				$notseen[$i++]= $k;
+			}
+			echo (show_php($notseen));
+		?>
 		</div>		
 		<? echo $content; ?>	
 	</body>
