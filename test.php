@@ -813,11 +813,11 @@ $content = tableArray($result);
 		</script>
 		
 		<!-- including https://code.google.com/p/php-class-for-google-chart-tools/ -->
-		<?php
+		<?php		
 			include('Chart.php');
 			$chart = new Chart('ColumnChart');
-			// OUTPUT: array, e.g. [['Rating', 'Films'], ['5', 10], ['6', 15], ['10', 3]]
-			$data = array(
+			// OUTPUT: 
+			/*$data = array(
 					'cols' => array(
 							array('id' => 'myratings', 'label' => 'Rating', 'type' => 'string'),
 							array('id' => 'number of movies', 'label' => '# of movies', 'type' => 'number')
@@ -828,10 +828,25 @@ $content = tableArray($result);
 							array('c' => array(array('v' => 'rating 7'), array('v' => 1))),
 							array('c' => array(array('v' => 'rating 9'), array('v' => 3)))
 					)
+			); 
+						$chart->load(json_encode($data));*/
+			$data = array(
+					array('Rating', '# of movies'),
+					array('Rate: 6', 8),
+					array('Rate: 7', 12)
 			);
-			//$chart->load($data, 'array');
-			$chart->load(json_encode($data));
-			$options = array('title' => 'Movies per rating', 'is3D' => true, 'width' => 500, 'height' => 400);
+			$chart->load($data, 'array');
+
+			$options = array(
+				'title' => 'Movies per rating', 
+				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
+				'hAxis' => array('title' => 'Ratings'),
+				'legend' => 'none',														
+				'is3D' => true, 
+				'width' => 500, 
+				'height' => 400,
+				'colors' => array('red')
+				);
 			echo $chart->draw('my_chart', $options);
 		?>
 		
