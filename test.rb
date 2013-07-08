@@ -1,12 +1,19 @@
 #!/usr/bin/ruby
 require 'date'
 require 'json'
+require 'open-uri'
 
-myfile = File.read('lista.csv')  
+myfile = File.read('lista.csv')	
 myfilename = 'lista.csv'
 films = {}
 mylist = {}
 counter = 0
+
+#print  e.g. 
+# 127 Hours;2010;60%;19/3/2011;1300489200
+def printfile(mtitle, myear, rating, seendate, mytimestamp)
+	puts "#{mtitle};#{myear};#{rating};#{seendate};#{mytimestamp}"
+end
 
  File.foreach(myfilename) do |line|
     name,rating,date = line.split(';')
@@ -22,7 +29,7 @@ films.each_pair{ |key,value|
 	g1 = key[/(.+)\s+\(([0-9]{4})\)/,1]
 	g2 = key[/(.+)\s+\(([0-9]{4})\)/,2]	
 	#puts "#{key},#{value[0]},#{value[1]}"
-	puts "#{g1};#{g2};#{value[0]};#{value[1]}"
+
 	
 	# format: 3/19/11
 	seendate = value[1]
@@ -37,11 +44,11 @@ films.each_pair{ |key,value|
 	mydate = Date.new(seenyear,seenmonth,seenday)
 	# convert into a Time object
 	mytime = Time.new(seenyear, seenmonth, seenday, 0, 0, 0,)
-	#puts "#{seenday}-#{seenmonth}-#{seenyear}"
 	# convert into a timestamp
 	mytimestamp = mytime.to_i
-	puts "#{mytimestamp}"
-	#puts "#{mytime}, #{mytimestamp}, \n#{Time.at(mytimestamp).utc.to_datetime}"
+
+	myformattedseendate = seenday.to_s + "/" + seenmonth.to_s + "/" + seenyear.to_s
+	printfile(g1, g2, value[0], myformattedseendate, mytimestamp)
 	
 	mytmplist = {}
 	mytmplist['title'] = movietitle
@@ -52,7 +59,31 @@ films.each_pair{ |key,value|
 	counter = counter+1
 }
 
-print mylist.to_json
+
+
+#print mylist.to_json
+ 
+#open("http://api.trakt.tv/search/movies.json/2cc9ffbe82711dfdff45caef7d030a17/batman") {|f|
+#    f.each_line {|line| p line}
+#  }
+
+
+=begin
+TO POST SEEN MOVIE TO TRAKT:
+{
+    "username": "username",
+    "password": "sha1hash",
+    "movies": [
+        {
+            "imdb_id": "tt0114746",
+            "title": "Twelve Monkeys",
+            "year": 1995,
+            "plays": 1,
+            "last_played": 1255960578
+        }
+    ]
+}
+=end
   
 #print films
 #print "Found:" + films.length.to_s
