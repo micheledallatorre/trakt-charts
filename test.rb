@@ -28,7 +28,8 @@ films.each_pair{ |key,value|
 	movieyear = key[/(.*\(([0-9]{4})\))/,2]
 	g1 = key[/(.+)\s+\(([0-9]{4})\)/,1]
 	g2 = key[/(.+)\s+\(([0-9]{4})\)/,2]	
-	#puts "#{key},#{value[0]},#{value[1]}"
+	# transform rating from e.g 80% to 8
+	myrating = value[0][0, value[0].length - 2]
 
 	
 	# format: 3/19/11
@@ -48,24 +49,32 @@ films.each_pair{ |key,value|
 	mytimestamp = mytime.to_i
 
 	myformattedseendate = seenday.to_s + "/" + seenmonth.to_s + "/" + seenyear.to_s
-	printfile(g1, g2, value[0], myformattedseendate, mytimestamp)
+	#printfile(g1, g2, myrating, myformattedseendate, mytimestamp)
 	
 	mytmplist = {}
 	mytmplist['title'] = movietitle
 	mytmplist['year'] = movieyear	
 	mytmplist['plays'] = 1
 	mytmplist['last_played'] = mytimestamp
-	mylist[counter] = mytmplist
+	
+	mytmpRatings = {}
+	mytmpRatings['imdb_id'] = ""
+	mytmpRatings['title'] = movietitle
+	mytmpRatings['year'] = movieyear	
+	mytmpRatings['rating'] = myrating
+
+	#CHOOSE which list to use!
+	mylist[counter] = mytmpRatings
 	counter = counter+1
 }
 
 
 
-#print mylist.to_json
+print mylist.to_json
  
-#open("http://api.trakt.tv/search/movies.json/2cc9ffbe82711dfdff45caef7d030a17/batman") {|f|
-#    f.each_line {|line| p line}
-#  }
+open("http://www.omdbapi.com/?t=127%20Hours&y=2010") {|f|
+    f.each_line {|line| p line}
+  }
 
 
 =begin
@@ -80,6 +89,27 @@ TO POST SEEN MOVIE TO TRAKT:
             "year": 1995,
             "plays": 1,
             "last_played": 1255960578
+        }
+    ]
+}
+
+TO POST MOVIE RATINGS TO TRAKT
+http://trakt.tv/api-docs/rate-movies
+{
+    "username": "username",
+    "password": "sha1hash",
+    "movies": [
+        {
+            "imdb_id": "tt0114746",
+            "title": "Twelve Monkeys",
+            "year": 1995,
+            "rating": 9
+        },
+        {
+            "imdb_id": "tt0082971",
+            "title": "Indiana Jones and the Raiders of the Lost Ark",
+            "year": 1981,
+            "rating": 10
         }
     ]
 }
