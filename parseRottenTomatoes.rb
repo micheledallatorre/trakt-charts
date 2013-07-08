@@ -15,3 +15,9 @@ require 'open-uri'
   end
   sleep 1
 end
+
+=begin
+Example of output:
+127 Hours (2010);60%;3/19/11
+21 Jump Street (2012);80%;8/21/12
+=end
