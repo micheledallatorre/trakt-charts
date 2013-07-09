@@ -1,0 +1,159 @@
+<html lang="en">
+	<head>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="jquery.tablesorter.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="themes/blue/style.css" type="text/css" media="print, projection, screen" />
+		
+		<script type="text/javascript" charset="utf-8">
+		
+		$.extend({
+		  getUrlVars: function(){
+			var vars = [], hash;
+			var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+			for(var i = 0; i < hashes.length; i++)
+			{
+			  hash = hashes[i].split('=');
+			  vars.push(hash[0]);
+			  vars[hash[0]] = hash[1];
+			}
+			return vars;
+		  },
+		  getUrlVar: function(name){
+			return $.getUrlVars()[name];
+		  }
+		});
+		
+
+		
+			$(document).ready(function(){
+				// my API trakt key
+				var myAPIkey = "2cc9ffbe82711dfdff45caef7d030a17";
+			
+				// MANDATORY: USERNAME
+				var myuser = $.getUrlVar('user');
+				// MANDATORY: FLAG for printing movies TXT list or table
+				var show = $.getUrlVar('show');
+				// MANDATORY: either print movies or shows
+				var videotype = $.getUrlVar('type');
+				
+				// OPTIONAL PARAM: show/hide images in table
+				var showimages = $.getUrlVar('images');
+				// showimages default = 1
+				if (showimages != 0 && showimages != 1) 
+					showimages = 1;	
+					
+				// counter for number of seen shows/movies
+				var counter = 0;
+				 
+				// failure call
+				if (videotype != "shows" && videotype != "movies") {
+						alert("USAGE: in URL si deve passare USER, SHOW [list/table] e TYPE [movies/shows], opzionale IMAGES [0/1]. Esempio: thispage.html?user=mdt&type=movies&show=table");
+				}
+					
+				// replace call info with user stuff
+				$.ajax({
+					dataType: "jsonp",
+					url: 'http://api.trakt.tv/user/library/' + videotype + '/all.json/'+ myAPIkey + '/' + myuser,
+					success: function(data) {
+					
+						if (show=="list") {
+								//alert(data);
+								var content = ""; 
+								for (var x = 0; x < data.length; x++) {							 
+										content += data[x].title + "<br/>";										
+									}
+								$("#myTableDiv").append(content);							    
+						}
+						else if (show=="table") {
+							var content = "<table id=\"myTable\" class=\"tablesorter\">"; 
+							content += "	<thead>";
+							content += "		<tr>"; 
+							content += "			<th>Movie Title</th>"; 
+							content += "			<th>Year</th>"; 
+							content += "			<th>IMDB ID</th>";
+							content += "			<th>TMDB ID</th>";
+							content += "			<th>Plays</th>";
+							content += "			<th>In collection</th>";
+							content += "			<th>Unseen</th>";
+							content += "			<th>URL</th>";
+							if (showimages == 1) {
+								content += "			<th>Images</th>";
+							}
+							content += "			<th>Genres</th>";							
+							content += "		</tr>"; 
+							content += "	</thead>"; 	
+							content += "	<tbody>"; 	
+							
+							// set counter
+						    setCounter(data.length);
+							
+							 for (var x = 0; x < data.length; x++) {							 
+										content += "<tr>";
+										content += "<td>";
+										content += data[x].title;								
+										content += "</td>";
+										content += "<td>";
+										content += data[x].year;								
+										content += "</td>";											
+										content += "<td>";	
+										content += "<a href=\"http://www.imdb.com/title/" + data[x].imdb_id + "\">" + data[x].imdb_id + "</a>";
+										content += "</td>";
+										content += "<td>";	
+										content += "<a href=\"http://www.themoviedb.org/movie/" + data[x].tmdb_id + "\">" + data[x].tmdb_id + "</a>";
+										content += "</td>";	
+										content += "<td>";	
+										content += data[x].plays;
+										content += "</td>";	
+										content += "<td>";	
+										content += data[x].in_collection;
+										content += "</td>";										
+										content += "<td>";	
+										content += data[x].unseen;
+										content += "</td>";	
+										content += "<td>";	
+										content += "<a href=\"" + data[x].url + "\">" + data[x].url + "</a>";
+										content += "</td>";	
+										if (showimages == 1) {
+											content += "<td>";	
+											content += "<img src=\"" + data[x].images.poster + "\" width=\"100px\" height=\"150px\">";
+											content += "</td>";	
+										}
+										content += "<td>";	
+										content += data[x].genres;
+										content += "</td>";				
+										content += "</tr>";				
+									}									
+							content += "</tbody>"; 	
+							content += "</table>";																
+							$("#myTableDiv").append(content);	
+							$("table").tablesorter({debug: true});							
+							writeTitle();							
+						}
+						else {
+							alert("Pirla! Controlla l'URL: deve essere ?user=mdt&show=list oppure show=table");
+						}			
+					}			
+				});
+				
+				// need this function to update global var counter outside ajax call
+				function setCounter(value) {
+					counter = value;
+					//alert("counter:"+counter+" value:"+value);
+				}
+				
+				// need this function to write html AFTER counter has been updated
+				function writeTitle() {
+					var mypagetitle = "<b>" + myuser + "'s watched " + counter + " " + videotype + "</b>";
+					//alert("title" + mypagetitle);
+					$("#pagetitle").html(mypagetitle);
+				}
+				
+			})		
+		</script>
+	</head>
+	<body id="index">		
+		<div id="pagetitle"></div>	
+		<br/>	
+		<div id="myTableDiv"></div>		
+	</body>
+</html>
