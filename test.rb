@@ -2,27 +2,61 @@
 require 'date'
 require 'json'
 require 'open-uri'
+#pretty print 
+require 'pp'
 
-myfile = File.read('lista.csv')	
-myfilename = 'lista.csv'
+
+importfile = 'lista.csv'
+myfile = File.open(importfile)	
 films = {}
 mylist = {}
 counter = 0
+imdblist = File.open('imdblist.csv')	
 
-#print  e.g. 
+# print  e.g. 
 # 127 Hours;2010;60%;19/3/2011;1300489200
-def printfile(mtitle, myear, rating, seendate, mytimestamp)
+def printFile(mtitle, myear, rating, seendate, mytimestamp)
 	puts "#{mtitle};#{myear};#{rating};#{seendate};#{mytimestamp}"
 end
 
- File.foreach(myfilename) do |line|
-    name,rating,date = line.split(';')
-    films[name] = rating, date
-  end
-  
+# outputs all data taken from the http://www.omdbapi.com/ website 
+# e.g. http://www.omdbapi.com/?t=127%20Hours&y=2010
+def findIMDBIDviaURI(myurllist)
+	myurllist.each do |title,url|
+		#puts title + "-------------" + url
+		myuri = URI.parse(URI.encode(url.strip))
+		#p myuri
+
+		open(myuri) { |f|
+			f.each_line { |line| 
+				p line
+			}
+		}
+
+	end
+end
+
+#prints an array (use pp if you prefer)
+def printArray(arr) 
+	arr.each do |e|
+		puts e
+	end
+end 
+
+#read input file and store data into films hash
+File.foreach(importfile) do |line|
+	#split line on ";" into the 3 fields below
+	#E.g. a line is as follows
+	# 127 Hours (2010);60%;3/19/11
+	name,rating,date = line.split(';')
+	# create films hash 
+	films[name] = rating, date
+end
+ 
+#for each movie into films hash 
 films.each_pair{ |key,value| 
-	title = key.length
 	#get movie title without year
+	#e.g. from "127 Hours (2010)" to "127 Hours"
 	movietitle = key[/(.*[^([0-9]{4})])/].strip! 
 	#get movie year
 	movieyear = key[/(.*\(([0-9]{4})\))/,2]
@@ -49,7 +83,7 @@ films.each_pair{ |key,value|
 	mytimestamp = mytime.to_i
 
 	myformattedseendate = seenday.to_s + "/" + seenmonth.to_s + "/" + seenyear.to_s
-	#printfile(g1, g2, myrating, myformattedseendate, mytimestamp)
+	#printFile(g1, g2, myrating, myformattedseendate, mytimestamp)
 	
 	mytmplist = {}
 	mytmplist['title'] = movietitle
@@ -68,15 +102,87 @@ films.each_pair{ |key,value|
 	counter = counter+1
 }
 
+myurlarray = []
+moviestitles = []
+myurllist = {}
+myres = []
+#print all titles-years with links
+mylist.each { |key,value| 
+	myurlarray.push "http://www.omdbapi.com/?t=#{value['title']}&y=#{value['year']}"
+	
+	x = [value['title'], value['year'], ""]
+	moviestitles.push x
+	
+	myurllist[value['title']] = "http://www.omdbapi.com/?t=#{value['title']}&y=#{value['year']}"
+}
 
-
-print mylist.to_json
+#printArray(myurlarray)
  
-open("http://www.omdbapi.com/?t=127%20Hours&y=2010") {|f|
-    f.each_line {|line| p line}
-  }
+# call function to get IMDBID via URL API
+#findIMDBIDviaURI(myurllist)
 
+#print mylist.to_json
+ 
+ temp = []
+ templist = {}
+ index = 0
+ #read file
+ #"{\"Title\":\"127 Hours\",\"Year\":\
+ File.foreach(imdblist) do |line|
+	# get title name
+	title = line[/Title.{5}([^\\]*).*/,1]
+	
+	# if title is null or empty (i.e. movie was not found)
+	if title == "" or title == nil
+		title = "NOTFOUND"
+	end
+	
+	imdbid = line[/imdbID.{5}([^\\]*).*/,1]
+	if imdbid == "" or imdbid == nil
+		imdbid = "NOTFOUND"
+	end
+	
+	moviestitles[index][2] = imdbid
+	index += 1
+	
+	temp.push(title)
+	temp.push(imdbid)
+	templist[title]= imdbid
+	
+  end
+  
+#pp moviestitles
 
+#print only NOT FOUND imdbid for movies
+=begin
+moviestitles.each do |a|
+	if a[2] == "NOTFOUND"
+		pp a
+	end
+end 
+=end
+
+#print movies JSON for import into trakt
+puts "\"movies\": ["
+moviestitles.each do |a|
+	puts "\t{"
+	
+	if a[2] == "NOTFOUND"
+		puts "\t}"
+	else 
+		puts "\t\t\"imdb_id\": \"" + a[2] + "\","
+	end
+	
+	puts "\t\t\"title\": \"" + a[0] + "\","
+	puts "\t\t\"year\": " + a[1] + ","	
+	puts "\t}"
+	 
+end 
+puts "]"
+ 
+#printArray(temp)
+#pp templist
+ 
 =begin
 TO POST SEEN MOVIE TO TRAKT:
 {
