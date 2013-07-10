@@ -5,8 +5,6 @@ require 'open-uri'
 #pretty print 
 require 'pp'
 
-
-
 #create file
 def createFile(myfile) 
 	file = File.open(myfile, "w+")
@@ -242,19 +240,8 @@ filmsdata.each { |key,value|
 	#get IMDBID from file
 	imdbid = line[/imdbID.{5}([^\\]*).*/,1]
 	
-=begin
-	# if title is null or empty (i.e. movie was not found)
-	if title == "" or title == nil
-		title = "NOTFOUND"
-	end
-	
-
-	if imdbid == "" or imdbid == nil
-		imdbid = "NOTFOUND"
-	end
-=end
-		
 	#EXACT MATCH TO AVOID ERRORS!
+	# Note that TITLE could be NIL, or "", or a bit different so the match is false!
 	#add IMDBID to FILMSDATA matching the title
 	if filmsdata.has_key?(title)
 		filmsdata[title]['imdb_id'] = imdbid
@@ -264,20 +251,27 @@ filmsdata.each { |key,value|
  end
 
 
-=begin
+ 
 # create backup file with all my FILMSDATA in CSV format
-myoutfile = createFile("backup.txt");
-filmsdata.each do |k,v|
-	# separator is comma
-	sep = ","
-	line = 	k + sep 			+ v['year'] + sep 			+ v['plays'].to_s + sep 			+ v['last_played'].to_s + sep 			+ v['seen_date'].to_s + sep 			+ v['imdb_id'].to_s + sep			+ v['rating'].to_s + sep 			+ v['omdbapiurl'] + "\n";
-	appendToFile(myoutfile, line)
+def backupFilmsOnFile(filename, filmslist, separator, printheader)
+	myoutfile = createFile(filename)
+	sep = separator
+	if printheader
+		header = "title" + sep + "year" + sep + "plays" + sep + "last_played" + sep + "seen_date" + sep + "imdb_id" + sep + "rating" + sep + "OMDB API URL" + "\n"
+		appendToFile(myoutfile, header)
+	end
+	filmslist.each do |k,v|
+		# separator is comma in CSV format, but you can choose yours
+		line = 	k + sep + v['year'] + sep + v['plays'].to_s + sep + v['last_played'].to_s + sep + v['seen_date'].to_s + sep + v['imdb_id'].to_s + sep+ v['rating'].to_s + sep + v['omdbapiurl'] + "\n";
+		appendToFile(myoutfile, line)
+	end
 end
-
 #printJSONseenMovie(filmsdata)
 #printJSONrateMovie(filmsdata)
-=end
 
+backupFilmsOnFile("backup.csv", filmsdata, ";", true)
+
+#printNotFoundIMDBIDs(filmsdata)
  
 
 
