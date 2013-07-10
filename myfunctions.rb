@@ -1,18 +1,3 @@
-
-#create file
-def createFile(myfile) 
-  file = File.open(myfile, "w+")
-	return file
-end
-
-#print to file
-def appendToFile(myfile, text)
-	#"a"  Write-only, starts at end of file if file exists, otherwise creates a new file for writing.
-	file = File.open(myfile, "a")
-	file.write(text) 
-	file.close
-end
-
 # outputs all data taken from the http://www.omdbapi.com/ website 
 # e.g. http://www.omdbapi.com/?t=127%20Hours&y=2010
 def findIMDBIDviaURI(list)
@@ -52,22 +37,24 @@ end
  
 # create backup file with all my FILMSDATA in CSV format, choose which fields to print
 def backupFilmsOnFileFixedColumn(filename, filmslist, separator, printheader)
-	myoutfile = createFile(filename)
+	#"a"  Write-only, starts at end of file if file exists, otherwise creates a new file for writing.
+	myoutfile = File.open(filename, "w")
 	sep = separator
 	if printheader
 		header = "title" + sep + "year" + sep + "plays" + sep + "last_played" + sep + "seen_date" + sep + "imdb_id" + sep + "rating" + sep + "OMDB API URL" + "\n"
-		appendToFile(myoutfile, header)
+		myoutfile.write(header)
 	end
 	filmslist.each do |k,v|
 		# separator is comma in CSV format, but you can choose yours
 		line = 	k + sep + v['year'] + sep + v['plays'].to_s + sep + v['last_played'].to_s + sep + v['seen_date'].to_s + sep + v['imdb_id'].to_s + sep+ v['rating'].to_s + sep + v['omdbapiurl'] + "\n";
-		appendToFile(myoutfile, line)
+		myoutfile.write(line)
 	end
+	myoutfile.close
 end
 
 # create backup file with all my FILMSDATA in CSV format, no option for choosing which fields of FILMSDATA!
 def backupFilmsOnFile(filename, filmslist, separator, printheader)
-	myoutfile = createFile(filename)
+	myoutfile = File.open(filename, "w")
 	sep = separator
 	if printheader
 		#Note: filmslist.first returns an array! E.g.
@@ -88,9 +75,9 @@ def backupFilmsOnFile(filename, filmslist, separator, printheader)
 		header.each do |v|
 			#add separator only if not last element, else add \n
 			if header.rindex(v) == (header.length - 1)
-				appendToFile(myoutfile, v +"\n")
+				myoutfile.write(v +"\n")
 			else
-				appendToFile(myoutfile, v + sep)
+				myoutfile.write(v + sep)
 			end	
 		end
 	end
@@ -109,12 +96,13 @@ def backupFilmsOnFile(filename, filmslist, separator, printheader)
 		myrow.each do |value|
 			#add separator only if not last element, else add \n
 			if myrow.rindex(value) == (myrow.length - 1)
-				appendToFile(myoutfile, value.to_s + "\n")
+				myoutfile.write(value.to_s + "\n")
 			else
-				appendToFile(myoutfile, value.to_s + sep)
+				myoutfile.write(value.to_s + sep)
 			end				
 		end
 	end
+	myoutfile.close
 end
 
 
