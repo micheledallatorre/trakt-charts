@@ -1,4 +1,6 @@
 title;year;plays;last_played;seen_date;imdb_id;rating;omdbapiurl
+Zero Dark Thirty;2012;1;;20/04/2013;tt1790885;7;http://www.omdbapi.com/?t=Zero%20Dark%20Thirty&y=2012
+The Break-up;2006;1;;28/06/2013;tt0452594;6;http://www.omdbapi.com/?t=The%20Break-up&y=2006
 It's a Disaster;2012;1;1371333600;16/06/2013;tt1995341;6;http://www.omdbapi.com/?t=It's%20a%20Disaster&y=2012
 Gangster Squad;2013;1;1370642400;07/06/2013;tt1321870;6;http://www.omdbapi.com/?t=Gangster Squad&y=2013
 The Great Gatsby;2013;1;1368914400;18/05/2013;tt1343092;8;http://www.omdbapi.com/?t=The Great Gatsby&y=2013
