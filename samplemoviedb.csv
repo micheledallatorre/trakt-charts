@@ -2,14 +2,14 @@ title;year;plays;last_played;seen_date;imdb_id;rating;omdbapiurl
 127 Hours;2010;1;1300489200;19/03/2011;tt1542344;6;http://www.omdbapi.com/?t=127 Hours&y=2010
 21 Jump Street;2012;1;1345500000;21/08/2012;tt1232829;8;http://www.omdbapi.com/?t=21 Jump Street&y=2012
 50 First Dates;2004;1;1318111200;09/10/2011;tt0343660;8;http://www.omdbapi.com/?t=50 First Dates&y=2004
-A Prophet (Un prophete);2009;1;1290207600;20/11/2010;;8;http://www.omdbapi.com/?t=A Prophet (Un prophete)&y=2009
+A Prophet (Un prophete);2009;1;1290207600;20/11/2010;;8;http://www.omdbapi.com/?t=A%20Prophet&y=2009
 A Separation;2011;1;1361833200;26/02/2013;tt1832382;8;http://www.omdbapi.com/?t=A Separation&y=2011
 A Walk to Remember;2002;1;1324162800;18/12/2011;tt0281358;7;http://www.omdbapi.com/?t=A Walk to Remember&y=2002
 Alice in Wonderland;2010;1;1367445600;02/05/2013;tt1014759;7;http://www.omdbapi.com/?t=Alice in Wonderland&y=2010
 Amélie;2001;1;1330297200;27/02/2012;tt0211915;8;http://www.omdbapi.com/?t=Amélie&y=2001
-American Madness;1934;1;1352070000;05/11/2012;;8;http://www.omdbapi.com/?t=American Madness&y=1934
+American Madness;1934;1;1352070000;05/11/2012;tt0022626;8;http://www.omdbapi.com/?i=&t=american+madness
 An Education;2009;1;1327186800;22/01/2012;tt1174732;8;http://www.omdbapi.com/?t=An Education&y=2009
-Angel & Tony (Angèle et Tony);2010;1;1363042800;12/03/2013;;8;http://www.omdbapi.com/?t=Angel & Tony (Angèle et Tony)&y=2010
+Angel & Tony (Angèle et Tony);2010;1;1363042800;12/03/2013;;8;http://www.omdbapi.com/?t=Angel & Tony&y=2010
 Argo;2012;1;1361660400;24/02/2013;tt1024648;7;http://www.omdbapi.com/?t=Argo&y=2012
 Attack the Block;2011;1;1321657200;19/11/2011;tt1478964;7;http://www.omdbapi.com/?t=Attack the Block&y=2011
 Avatar;2009;1;1367445600;02/05/2013;tt0499549;10;http://www.omdbapi.com/?t=Avatar&y=2009
@@ -19,7 +19,7 @@ Battleship;2012;1;1345413600;20/08/2012;tt1440129;6;http://www.omdbapi.com/?t=Ba
 Battlestar Galactica;2003;1;1365976800;15/04/2013;tt0314979;7;http://www.omdbapi.com/?t=Battlestar Galactica&y=2003
 Because I Said So;2007;1;1330038000;24/02/2012;tt0490084;7;http://www.omdbapi.com/?t=Because I Said So&y=2007
 Benvenuti Al Sud;2010;1;1343599200;30/07/2012;;8;http://www.omdbapi.com/?t=Benvenuti Al Sud&y=2010
-Berlinguer ti voglio bene (Berlinguer: I Love You);1977;1;1349733600;09/10/2012;;5;http://www.omdbapi.com/?t=Berlinguer ti voglio bene (Berlinguer: I Love You)&y=1977
+Berlinguer ti voglio bene (Berlinguer: I Love You);1977;1;1349733600;09/10/2012;;5;http://www.omdbapi.com/?t=Berlinguer: I Love You&y=1977
 Black Swan;2010;1;1300748400;22/03/2011;tt0947798;7;http://www.omdbapi.com/?t=Black Swan&y=2010
 Brave;2012;1;1347832800;17/09/2012;tt1217209;8;http://www.omdbapi.com/?t=Brave&y=2012
 Bridesmaids;2011;1;1320966000;11/11/2011;tt1478338;8;http://www.omdbapi.com/?t=Bridesmaids&y=2011
@@ -27,7 +27,7 @@ Brooklyn's Finest;2009;1;1367445600;02/05/2013;tt1210042;6;http://www.omdbapi.co
 Captain America: The First Avenger;2011;1;1323471600;10/12/2011;tt0458339;8;http://www.omdbapi.com/?t=Captain America: The First Avenger&y=2011
 Cars 2;2011;1;1320534000;06/11/2011;tt1216475;7;http://www.omdbapi.com/?t=Cars 2&y=2011
 Chronicle;2012;1;1341612000;07/07/2012;tt1706593;6;http://www.omdbapi.com/?t=Chronicle&y=2012
-Confessions (Kokuhaku);2010;1;1368482400;14/05/2013;;7;http://www.omdbapi.com/?t=Confessions (Kokuhaku)&y=2010
+Confessions (Kokuhaku);2010;1;1368482400;14/05/2013;;7;http://www.omdbapi.com/?t=Confessions&y=2010
 Cool Runnings;1993;1;1312495200;05/08/2011;tt0106611;9;http://www.omdbapi.com/?t=Cool Runnings&y=1993
 Dark City;1998;1;1335218400;24/04/2012;tt0118929;7;http://www.omdbapi.com/?t=Dark City&y=1998
 Date Night;2010;1;1315605600;10/09/2011;tt1279935;8;http://www.omdbapi.com/?t=Date Night&y=2010
@@ -76,7 +76,7 @@ Laaga Chunari Mein Daag - Journey of a Woman;2007;1;1367445600;02/05/2013;;8;htt
 Lawless;2012;1;1355612400;16/12/2012;tt1212450;6;http://www.omdbapi.com/?t=Lawless&y=2012
 Life as We Know It;2010;1;1302213600;08/04/2011;tt1055292;6;http://www.omdbapi.com/?t=Life as We Know It&y=2010
 Limitless;2011;1;1310508000;13/07/2011;tt1219289;6;http://www.omdbapi.com/?t=Limitless&y=2011
-Lockout (Unrated);2012;1;1344808800;13/08/2012;;7;http://www.omdbapi.com/?t=Lockout (Unrated)&y=2012
+Lockout (Unrated);2012;1;1344808800;13/08/2012;;7;http://www.omdbapi.com/?t=Lockout&y=2012
 Los Cronocrímenes (Timecrimes);2007;1;1324940400;27/12/2011;;6;http://www.omdbapi.com/?t=Los Cronocrímenes (Timecrimes)&y=2007
 Machete;2010;1;1306101600;23/05/2011;tt0985694;7;http://www.omdbapi.com/?t=Machete&y=2010
 Mammuth;2011;1;1361142000;18/02/2013;;5;http://www.omdbapi.com/?t=Mammuth&y=2011
