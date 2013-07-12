@@ -1,24 +1,24 @@
 title;year;plays;last_played;seen_date;imdb_id;rating;omdbapiurl
-Zero Dark Thirty;2012;1;;20/04/2013;tt1790885;7;http://www.omdbapi.com/?t=Zero%20Dark%20Thirty&y=2012
-The Break-up;2006;1;;28/06/2013;tt0452594;6;http://www.omdbapi.com/?t=The%20Break-up&y=2006
+Zero Dark Thirty;2012;1;1366408800;20/04/2013;tt1790885;7;http://www.omdbapi.com/?t=Zero%20Dark%20Thirty&y=2012
+The Break-up;2006;1;1372370400;28/06/2013;tt0452594;6;http://www.omdbapi.com/?t=The%20Break-up&y=2006
 It's a Disaster;2012;1;1371333600;16/06/2013;tt1995341;6;http://www.omdbapi.com/?t=It's%20a%20Disaster&y=2012
-Gangster Squad;2013;1;1370642400;07/06/2013;tt1321870;6;http://www.omdbapi.com/?t=Gangster Squad&y=2013
-The Great Gatsby;2013;1;1368914400;18/05/2013;tt1343092;8;http://www.omdbapi.com/?t=The Great Gatsby&y=2013
-Confessions (Kokuhaku);2010;1;1368482400;13/05/2013;tt1590089;7;http://www.omdbapi.com/?t=Confessions&y=2010
-The Iron Lady;2011;1;1367704800;03/05/2013;tt1007029;6;http://www.omdbapi.com/?t=The Iron Lady&y=2011
+Gangster Squad;2013;1;1370556000;07/06/2013;tt1321870;6;http://www.omdbapi.com/?t=Gangster Squad&y=2013
+The Great Gatsby;2013;1;1368828000;18/05/2013;tt1343092;8;http://www.omdbapi.com/?t=The Great Gatsby&y=2013
+Confessions (Kokuhaku);2010;1;1368396000;13/05/2013;tt1590089;7;http://www.omdbapi.com/?t=Confessions&y=2010
+The Iron Lady;2011;1;1367532000;03/05/2013;tt1007029;6;http://www.omdbapi.com/?t=The Iron Lady&y=2011
 Battlestar Galactica;2003;1;1365976800;15/04/2013;tt0314979;7;http://www.omdbapi.com/?t=Battlestar Galactica&y=2003
-Killing Them Softly;2012;1;1365976800;13/04/2013;tt1764234;6;http://www.omdbapi.com/?t=Killing Them Softly&y=2012
+Killing Them Softly;2012;1;1365804000;13/04/2013;tt1764234;6;http://www.omdbapi.com/?t=Killing Them Softly&y=2012
 G.I. Joe: Retaliation;2013;1;1365372000;08/04/2013;tt1583421;8;http://www.omdbapi.com/?t=G.I. Joe: Retaliation&y=2013
 The Ides of March;2011;1;1365285600;07/04/2013;tt1124035;8;http://www.omdbapi.com/?t=The Ides of March&y=2011
-Silver Linings Playbook;2012;1;1364853600;31/03/2013;tt1045658;7;http://www.omdbapi.com/?t=Silver Linings Playbook&y=2012
-Into Paradiso;2010;1;1364252400;25/03/2013;tt1719496;8;http://www.omdbapi.com/?t=Into Paradiso&y=2010
-Wreck-it Ralph;2012;1;1364079600;23/03/2013;tt1772341;9;http://www.omdbapi.com/?t=Wreck-It%20Ralph&y=2012
-Perder Es Cuestion De Metodo;2004;1;1363647600;18/03/2013;tt0404318;8;
-Angel & Tony (Angèle et Tony);2010;1;1363042800;11/03/2013;tt1538221;8;
+Silver Linings Playbook;2012;1;1364684400;31/03/2013;tt1045658;7;http://www.omdbapi.com/?t=Silver Linings Playbook&y=2012
+Into Paradiso;2010;1;1364166000;25/03/2013;tt1719496;8;http://www.omdbapi.com/?t=Into Paradiso&y=2010
+Wreck-it Ralph;2012;1;1363993200;23/03/2013;tt1772341;9;http://www.omdbapi.com/?t=Wreck-It%20Ralph&y=2012
+Perder Es Cuestion De Metodo;2004;1;1363561200;18/03/2013;tt0404318;8;
+Angel & Tony (Angèle et Tony);2010;1;1362956400;11/03/2013;tt1538221;8;
 Sherlock Holmes: A Game of Shadows;2011;1;1362783600;09/03/2013;tt1515091;8;http://www.omdbapi.com/?t=Sherlock Holmes: A Game of Shadows&y=2011
 StreetDance 2;2012;1;1362697200;08/03/2013;tt1718903;7;http://www.omdbapi.com/?t=StreetDance 2&y=2012
 Inside Job;2010;1;1362351600;04/03/2013;tt1645089;8;http://www.omdbapi.com/?t=Inside Job&y=2010
-The Impossible;2012;1;1362351600;03/03/2013;tt1649419;8;http://www.omdbapi.com/?t=The Impossible&y=2012
+The Impossible;2012;1;1362265200;03/03/2013;tt1649419;8;http://www.omdbapi.com/?t=The Impossible&y=2012
 A Separation;2011;1;1361833200;26/02/2013;tt1832382;8;http://www.omdbapi.com/?t=A Separation&y=2011
 Argo;2012;1;1361660400;24/02/2013;tt1024648;7;http://www.omdbapi.com/?t=Argo&y=2012
 The Bourne Ultimatum;2007;1;1361660400;24/02/2013;tt0440963;7;http://www.omdbapi.com/?t=The Bourne Ultimatum&y=2007
@@ -71,7 +71,7 @@ Banlieue 13 - Ultimatum (District 13: Ultimatum);2009;1;1338328800;30/05/2012;tt
 Senna;2010;1;1338069600;27/05/2012;tt1424432;8;http://www.omdbapi.com/?t=Senna&y=2010
 District B13 (Banlieue 13);2004;1;1336860000;13/05/2012;tt0414852;8;http://www.omdbapi.com/?t=District%20B13&y=2004
 Haywire;2012;1;1336168800;05/05/2012;tt2324815;7;http://www.omdbapi.com/?t=Haywire&y=2012
-Marvel's The Avengers;2012;1;1335823200;01/05/2012;tt2384455;8;http://www.omdbapi.com/?t=Marvel's The Avengers&y=2012
+Marvel's The Avengers;2012;1;1335823200;01/05/2012;tt0848228;8;http://www.omdbapi.com/?t=The Avengers&y=2012
 Mission: Impossible Ghost Protocol;2011;1;1335650400;29/04/2012;tt1229238;8;http://www.omdbapi.com/?t=Mission:%20Impossible%20-%20Ghost%20Protocol&y=2011
 The Great White Silence;1924;1;1335477600;27/04/2012;tt1764657;7;http://www.omdbapi.com/?t=The Great White Silence&y=1924
 Dark City;1998;1;1335218400;24/04/2012;tt0118929;7;http://www.omdbapi.com/?t=Dark City&y=1998
@@ -93,7 +93,7 @@ Ocean's Thirteen;2007;1;1327100400;21/01/2012;tt0496806;7;http://www.omdbapi.com
 Rise of the Planet of the Apes;2011;1;1327100400;21/01/2012;tt1318514;8;http://www.omdbapi.com/?t=Rise of the Planet of the Apes&y=2011
 The Hangover Part II;2011;1;1326668400;16/01/2012;tt1411697;7;http://www.omdbapi.com/?t=The Hangover Part II&y=2011
 My Big Fat Greek Wedding;2002;1;1326322800;12/01/2012;tt0259446;8;http://www.omdbapi.com/?t=My Big Fat Greek Wedding&y=2002
-The Inbetweeners;2012;1;1326063600;09/01/2012;tt1798695;7;http://www.omdbapi.com/?t=The Inbetweeners&y=2012
+The Inbetweeners;2011;1;1326063600;09/01/2012;tt1716772;7;http://www.omdbapi.com/?t=The%20Inbetweeners%20Movie&y=2011
 The Hangover;2009;1;1325977200;08/01/2012;tt1119646;8;http://www.omdbapi.com/?t=The Hangover&y=2009
 G-Force;2009;1;1325718000;05/01/2012;tt0436339;7;http://www.omdbapi.com/?t=G-Force&y=2009
 The Island;2005;1;1325718000;05/01/2012;tt0399201;9;http://www.omdbapi.com/?t=The Island&y=2005
@@ -169,30 +169,30 @@ The Shining;1980;1;1287525600;20/10/2010;tt0081505;5;http://www.omdbapi.com/?t=T
 Iron Man 2;2010;1;1286661600;10/10/2010;tt1228705;9;http://www.omdbapi.com/?t=Iron Man 2&y=2010
 Surf School;2006;1;1286661600;10/10/2010;tt0456014;6;http://www.omdbapi.com/?t=Surf School&y=2006
 The Last Airbender;2010;1;1286661600;10/10/2010;tt0938283;7;http://www.omdbapi.com/?t=The Last Airbender&y=2010
-Inception;2010;1;;02/08/2010;tt1375666;7;http://www.omdbapi.com/?t=Inception&y=2010
-Ratatouille;2007;1;;27/07/2010;tt0382932;9;http://www.omdbapi.com/?t=Ratatouille&y=2007
-Toy Story 3;2010;1;;22/07/2010;tt0435761;9;http://www.omdbapi.com/?t=Toy Story 3&y=2010
-The Shawshank Redemption;1994;1;;19/07/2010;tt0111161;9;http://www.omdbapi.com/?t=The Shawshank Redemption&y=1994
-Toy Story 2;1999;1;;18/07/2010;tt0120363;8;http://www.omdbapi.com/?t=Toy Story 2&y=1999
-Twelve Monkeys (12 Monkeys);1995;1;;06/07/2010;tt0114746;5;http://www.omdbapi.com/?t=Twelve%20Monkeys&y=1995
-Brooklyn's Finest;2009;1;;01/07/2010;tt1210042;6;http://www.omdbapi.com/?t=Brooklyn's Finest&y=2009
-Sherlock Holmes;2009;1;;27/06/2010;tt0988045;10;http://www.omdbapi.com/?t=Sherlock Holmes&y=2009
-Kick-Ass;2010;1;;22/06/2010;tt1250777;6;http://www.omdbapi.com/?t=Kick-Ass&y=2010
-How to Train Your Dragon;2010;1;;16/06/2010;tt0892769;10;http://www.omdbapi.com/?t=How to Train Your Dragon&y=2010
-National Lampoon's Barely Legal (After School Special);2003;1;;13/06/2010;tt0302297;8;
-The Losers;2010;1;;09/06/2010;tt0480255;9;http://www.omdbapi.com/?t=The Losers&y=2010
-Prince of Persia: The Sands of Time;2010;1;;03/06/2010;tt0473075;9;http://www.omdbapi.com/?t=Prince of Persia: The Sands of Time&y=2010
-StreetDance 3D;2010;1;;29/05/2010;tt1447972;9;http://www.omdbapi.com/?t=StreetDance 3D&y=2010
-Vincere;2009;1;;27/05/2010;tt1156173;7;http://www.omdbapi.com/?t=Vincere&y=2009
-Pope Joan;2009;1;;16/05/2010;tt0458455;7;http://www.omdbapi.com/?t=Pope Joan&y=2009
-The International;2009;1;;15/05/2010;tt0963178;7;http://www.omdbapi.com/?t=The International&y=2009
-Robin Hood;2010;1;;13/05/2010;tt0955308;6;http://www.omdbapi.com/?t=Robin Hood&y=2010
-The Hurt Locker;2008;1;;14/04/2010;tt0887912;7;http://www.omdbapi.com/?t=The Hurt Locker&y=2008
-Watchmen;2009;1;;21/03/2010;tt0409459;8;http://www.omdbapi.com/?t=Watchmen&y=2009
-Alice in Wonderland;2010;1;;06/03/2010;tt1014759;7;http://www.omdbapi.com/?t=Alice in Wonderland&y=2010
-Avatar;2009;1;;04/02/2010;tt0499549;10;http://www.omdbapi.com/?t=Avatar&y=2009
-Into the Wild;2007;1;;30/01/2010;tt0758758;9;http://www.omdbapi.com/?t=Into the Wild&y=2007
-Up;2009;1;;15/01/2010;tt1049413;9;http://www.omdbapi.com/?t=Up&y=2009
-Laaga Chunari Mein Daag - Journey of a Woman;2007;1;;25/07/2009;tt0985636;8;http://www.omdbapi.com/?t=Laaga%20Chunari%20Mein%20Daag:%20Journey%20of%20a%20Woman&y=2007
-Harry Potter and the Half-Blood Prince;2009;1;;21/07/2009;tt0417741;8;http://www.omdbapi.com/?t=Harry Potter and the Half-Blood Prince&y=2009
-Gran Torino;2008;1;;19/07/2009;tt1205489;9;http://www.omdbapi.com/?t=Gran Torino&y=2008
+Inception;2010;1;1280700000;02/08/2010;tt1375666;7;http://www.omdbapi.com/?t=Inception&y=2010
+Ratatouille;2007;1;1280181600;27/07/2010;tt0382932;9;http://www.omdbapi.com/?t=Ratatouille&y=2007
+Toy Story 3;2010;1;1279749600;22/07/2010;tt0435761;9;http://www.omdbapi.com/?t=Toy Story 3&y=2010
+The Shawshank Redemption;1994;1;1279490400;19/07/2010;tt0111161;9;http://www.omdbapi.com/?t=The Shawshank Redemption&y=1994
+Toy Story 2;1999;1;1279404000;18/07/2010;tt0120363;8;http://www.omdbapi.com/?t=Toy Story 2&y=1999
+Twelve Monkeys (12 Monkeys);1995;1;1278367200;06/07/2010;tt0114746;5;http://www.omdbapi.com/?t=Twelve%20Monkeys&y=1995
+Brooklyn's Finest;2009;1;1277935200;01/07/2010;tt1210042;6;http://www.omdbapi.com/?t=Brooklyn's Finest&y=2009
+Sherlock Holmes;2009;1;1277589600;27/06/2010;tt0988045;10;http://www.omdbapi.com/?t=Sherlock Holmes&y=2009
+Kick-Ass;2010;1;1277157600;22/06/2010;tt1250777;6;http://www.omdbapi.com/?t=Kick-Ass&y=2010
+How to Train Your Dragon;2010;1;1276639200;16/06/2010;tt0892769;10;http://www.omdbapi.com/?t=How to Train Your Dragon&y=2010
+National Lampoon's Barely Legal (After School Special);2003;1;1276380000;13/06/2010;tt0302297;8;
+The Losers;2010;1;1276034400;09/06/2010;tt0480255;9;http://www.omdbapi.com/?t=The Losers&y=2010
+Prince of Persia: The Sands of Time;2010;1;1275516000;03/06/2010;tt0473075;9;http://www.omdbapi.com/?t=Prince of Persia: The Sands of Time&y=2010
+StreetDance 3D;2010;1;1275084000;29/05/2010;tt1447972;9;http://www.omdbapi.com/?t=StreetDance 3D&y=2010
+Vincere;2009;1;1274911200;27/05/2010;tt1156173;7;http://www.omdbapi.com/?t=Vincere&y=2009
+Pope Joan;2009;1;1273960800;16/05/2010;tt0458455;7;http://www.omdbapi.com/?t=Pope Joan&y=2009
+The International;2009;1;1273874400;15/05/2010;tt0963178;7;http://www.omdbapi.com/?t=The International&y=2009
+Robin Hood;2010;1;1273701600;13/05/2010;tt0955308;6;http://www.omdbapi.com/?t=Robin Hood&y=2010
+The Hurt Locker;2008;1;1271196000;14/04/2010;tt0887912;7;http://www.omdbapi.com/?t=The Hurt Locker&y=2008
+Watchmen;2009;1;1269126000;21/03/2010;tt0409459;8;http://www.omdbapi.com/?t=Watchmen&y=2009
+Alice in Wonderland;2010;1;1267830000;06/03/2010;tt1014759;7;http://www.omdbapi.com/?t=Alice in Wonderland&y=2010
+Avatar;2009;1;1265238000;04/02/2010;tt0499549;10;http://www.omdbapi.com/?t=Avatar&y=2009
+Into the Wild;2007;1;1264806000;30/01/2010;tt0758758;9;http://www.omdbapi.com/?t=Into the Wild&y=2007
+Up;2009;1;1263510000;15/01/2010;tt1049413;9;http://www.omdbapi.com/?t=Up&y=2009
+Laaga Chunari Mein Daag - Journey of a Woman;2007;1;1248472800;25/07/2009;tt0985636;8;http://www.omdbapi.com/?t=Laaga%20Chunari%20Mein%20Daag:%20Journey%20of%20a%20Woman&y=2007
+Harry Potter and the Half-Blood Prince;2009;1;1248127200;21/07/2009;tt0417741;8;http://www.omdbapi.com/?t=Harry Potter and the Half-Blood Prince&y=2009
+Gran Torino;2008;1;1247954400;19/07/2009;tt1205489;9;http://www.omdbapi.com/?t=Gran Torino&y=2008
