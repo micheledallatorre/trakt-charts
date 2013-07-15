@@ -33,7 +33,9 @@ Use this Ruby script (parseRottenTomatoes.rb) to create a list of ratings from y
 NOTE: you need to specify your RottenTomatoes UserID into the parseRottenTomatoes.rb script before running it!
 
 __TODO__
-
+- [x] import from RottenTomatoes
+- [x] export to JSON format to be imported into Trakt
+- [ ] other features?
 
 ```PHP
 // PHP code to be inserted
