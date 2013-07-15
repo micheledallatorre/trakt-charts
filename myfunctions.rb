@@ -126,6 +126,7 @@ TO POST SEEN MOVIE TO TRAKT:
 def printJSONseenMovie (list)
 	length = list.length
 	counter = 0
+	puts "{"
 	puts "\"movies\": ["
 	list.each do |k,elem|
 		puts "\t{"
@@ -142,6 +143,7 @@ def printJSONseenMovie (list)
 		end
 	end 
 	puts "]"
+	puts "}"
 end
 
 #print movies JSON for import into trakt
@@ -170,6 +172,7 @@ http://trakt.tv/api-docs/rate-movies
 def printJSONrateMovie (list)
 	length = list.length
 	counter = 0
+	puts "{"
 	puts "\"movies\": ["
 	list.each do |k,elem|
 		puts "\t{"
@@ -185,4 +188,5 @@ def printJSONrateMovie (list)
 		end
 	end 
 	puts "]"
+	puts "}"
 end
