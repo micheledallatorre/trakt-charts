@@ -19,6 +19,19 @@ v 0.1 added http://tablesorter.com/docs/ to sort the HTML table
 
 ### Usage examples
 
+```Ruby
+parseRottenTomatoes.rb > list.csv
+```
+Use this Ruby script (parseRottenTomatoes.rb) to create a list of ratings from your RottenTomatoes rating webpage, and outputs it into a file called list.csv with the following format.
+
+```CSV
+127 Hours (2010);60%;3/19/11
+21 Jump Street (2012);80%;8/21/12
+50 First Dates (2004);80%;10/09/11
+```
+
+NOTE: you need to specify your RottenTomatoes UserID into the parseRottenTomatoes.rb script before running it!
+
 __TODO__
 
 
