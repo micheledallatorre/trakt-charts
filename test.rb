@@ -111,29 +111,33 @@ FORMAT:
 filmsdata = {}
 
 =begin
-# Hash {} generated from input importfile
+# intpufilms: Hash {} generated from input importfile
 # format:
 # movietitle (movieyear) => rating, date
 # E.g. "127 Hours (2010)"=>["60%", "3/19/11\n"],
 inputfilms = parseRottenTomatoesList(importfile)
  
 #for each movie into inputfilms hash 
-# parse and create data for FILMSDATA list
+# parse and create data for FILMSDATA hash
 createMovieDatabase(inputfilms, filmsdata)
  
 #add to FILMSDATA the url for OMBDAPI to get info about the imdbID
+# the url is created as follows, using the TITLE and YEAR values parsed before from the RottenTomatoes input file
 filmsdata.each { |key,value| 
 	filmsdata[key]['omdbapiurl'] = "http://www.omdbapi.com/?t=#{value['title']}&y=#{value['year']}"
 }
  
-# call function to get IMDBID via URL API
+# outputs all data taken from the http://www.omdbapi.com/ website 
+# i.e. it calls http://www.omdbapi.com/?t=127%20Hours&y=2010
+# and returns all the info ON SCREEN, e.g.
+#{"Title":"127 Hours","Year":"2010","Rated":"R","Released":"28 Jan 2011","Runtime":"1 h 34 min","Genre":"Adventure, Biography, Drama, Thriller","Director":"Danny Boyle","Writer":"Danny Boyle, Simon Beaufoy","Actors":"James Franco, Amber Tamblyn, Kate Mara, Sean Bott","Plot":"A mountain climber becomes trapped under a boulder while canyoneering alone near Moab, Utah and resorts to desperate measures in order to survive.","Poster":"http://ia.media-imdb.com/images/M/MV5BMTc2NjMzOTE3Ml5BMl5BanBnXkFtZTcwMDE0OTc5Mw@@._V1_SX300.jpg","imdbRating":"7.7","imdbVotes":"179,821","imdbID":"tt1542344","Type":"movie","Response":"True"}
 #findIMDBIDviaURI(filmsdata)
 
 
 # file generetad via OMDBapi call
 imdblist = File.open('imdblist.csv')	
-# Read file with data received from OMDBAPI calling, in the format below, and parse data into FILMSDATA
-#"{\"Title\":\"127 Hours\",\"Year\":\
+# Read file with data received from OMDBAPI calling above (i.e. findIMDBIDviaURI(filmsdata)), in the format below, and parse data into FILMSDATA
+#"{\"Title\":\"127 Hours\",\"Year\":\...
 readFileFromOMDB(imdblist, filmsdata)
 #close file
 imdblist.close
@@ -147,11 +151,17 @@ imdblist.close
  
  
  ##########
- # read CSV file with all data
+ # read CSV backup file with all data, i.e. my movies database
+ # with this format (example of header + 3 rows/movies)
+ # 		title;year;plays;last_played;seen_date;imdb_id;rating;omdbapiurl
+ # 		Zero Dark Thirty;2012;1;1366408800;20/04/2013;tt1790885;7;http://www.omdbapi.com/?t=Zero%20Dark%20Thirty&y=2012
+ # 		The Break-up;2006;1;1372370400;28/06/2013;tt0452594;6;http://www.omdbapi.com/?t=The%20Break-up&y=2006
+ # 		It's a Disaster;2012;1;1371333600;16/06/2013;tt1995341;6;http://www.omdbapi.com/?t=It's%20a%20Disaster&y=201
+ #  
  # NOTE: first line MUST BE the header!
- # calculate timestamp from seen date
+ # (re)calculate timestamp, i.e. column called last_played, from seen_date column value
  # update FILMSDATA hash
- # write on file
+ # write on file my new movies database updated
  ##########
 
  counter = 0;
@@ -205,8 +215,6 @@ mydbmovies.close
 #printJSONrateMovie(filmsdata)
 
 ##################OLD CODE##################
-#printJSONseenMovie(filmsdata)
-#printJSONrateMovie(filmsdata)
 #printNotFoundIMDBIDs(filmsdata)
 #print filmsdata.to_json
 ############################################
