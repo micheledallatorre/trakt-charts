@@ -95,13 +95,6 @@ end
 # import file generated from RottenTomatoes parsing
 importfile = 'lista.csv'
 
-# Hash {} generated from input importfile
-# format:
-# movietitle (movieyear) => rating, date
-# E.g. "127 Hours (2010)"=>["60%", "3/19/11\n"],
-inputfilms = parseRottenTomatoesList(importfile)
-
-
 # FILMSDATA: contains all the data about films
 =begin
 FORMAT:
@@ -116,6 +109,13 @@ FORMAT:
  }
 =end
 filmsdata = {}
+
+=begin
+# Hash {} generated from input importfile
+# format:
+# movietitle (movieyear) => rating, date
+# E.g. "127 Hours (2010)"=>["60%", "3/19/11\n"],
+inputfilms = parseRottenTomatoesList(importfile)
  
 #for each movie into inputfilms hash 
 # parse and create data for FILMSDATA list
@@ -141,12 +141,68 @@ imdblist.close
 
 #create CSV file with all FILMSDATA information
 #backupFilmsOnFile("backup.csv", filmsdata, ";", true)
-
+=end
 
 ######################### END #########################
  
+ 
+ ##########
+ # read CSV file with all data
+ # NOTE: first line MUST BE the header!
+ # calculate timestamp from seen date
+ # update FILMSDATA hash
+ # write on file
+ ##########
 
+ counter = 0;
+ header = []
+ mydbmovies = File.open('myfilmsdatabase.csv')
+ File.foreach(mydbmovies) do |line|
+	#split line on separator, that is ";"
+	myrowarray = line.split(";")
+	# remove carriage return from last element, i.e. \r\n
+	myrowarray[myrowarray.length-1] = myrowarray.last.strip!
+	
+	#skip header, that is first line
+	if counter == 0 then
+		counter += 1
+		header = myrowarray
+		next
+	end
+	
+	seendate = myrowarray[4]
+	seenday = seendate[/(\d+)\/(\d+)\/(\d+)/,1].to_i
+	seenmonth = seendate[/(\d+)\/(\d+)\/(\d+)/,2].to_i
+	seenyear = seendate[/(\d+)\/(\d+)\/(\d+)/,3].to_i
+	# convert into a Date object
+	#mydate = Date.new(seenyear,seenmonth,seenday)
+	# convert into a Time object
+	mytime = Time.new(seenyear, seenmonth, seenday, 0, 0, 0,)
+	# convert into a timestamp
+	mytimestamp = mytime.to_i	
+	# temporary list to be added to FILMSDATA list
+	
+	mytmplist = {}
+	mytmplist[header[0]] = myrowarray[0]
+	mytmplist[header[1]] = myrowarray[1]	
+	mytmplist[header[2]] = myrowarray[2]
+	mytmplist[header[3]] = mytimestamp
+	mytmplist[header[4]] = myrowarray[4]
+	mytmplist[header[5]] = myrowarray[5]
+	mytmplist[header[6]] = myrowarray[6]
+	mytmplist[header[7]] = myrowarray[7]
+	# add info to FILMSDATA list
+	filmsdata[myrowarray[0]] = mytmplist
+	counter += 1
 
+end
+mydbmovies.close
+#backupFilmsOnFile("out.csv", filmsdata, ";", true)
+#print list to import SEEN MOVIES into trakt
+#printJSONseenMovie(filmsdata)
+
+#print list to import RATINGS into trakt
+#printJSONrateMovie(filmsdata)
 
 ##################OLD CODE##################
 #printJSONseenMovie(filmsdata)
