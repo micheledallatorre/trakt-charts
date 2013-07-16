@@ -213,8 +213,11 @@ for($i=0;$i<count($result);$i++)	{
 			}
 		}
 }			
-				
-				
+	
+
+//sort by FIRST SEEN timestamp so that all resulting arrays are ordered
+// used in chart MOVIES SEEN PER MONTH (June 2010=>5, May 2011=>2, etc.)
+array_sort_by_column($result, 'firstseen_timestamp');				
 				
 				
 				
@@ -312,80 +315,14 @@ $content = tableArray($result);
 				}
 			} 
 			
-			// ORDER ARRAY OF WEEK DAYS
-			function orderbyweekday($a, $b) {
-
-				if (strcmp($a, "Mon") == 0) 
-					$a = 0;
-				else if (strcmp($a, "Tue") == 0) 
-					$a = 1;				
-				else if (strcmp($a, "Wed") == 0) 
-					$a = 2;
-				else if (strcmp($a, "Thu") == 0) 
-					$a = 3; 
-				else if (strcmp($a, "Fri") == 0) 
-					$a = 4;
-				else if (strcmp($a, "Sat") == 0)  
-					$a = 5;
-				else if (strcmp($a, "Sun") == 0)   
-					$a = 6;	
-
-				if (strcmp($b, "Mon") == 0) 
-					$b = 0;
-				else if (strcmp($b, "Tue") == 0) 
-					$b = 1;				
-				else if (strcmp($b, "Wed") == 0) 
-					$b = 2;
-				else if (strcmp($b, "Thu") == 0) 
-					$b = 3; 
-				else if (strcmp($b, "Fri") == 0) 
-					$b = 4;
-				else if (strcmp($b, "Sbt") == 0)  
-					$b = 5;
-				else if (strcmp($b, "Sun") == 0)   
-					$b = 6;	
-					
-				// if same day, return 0
-				if ($a == $b) {
-					return 0;
-				} 
-					
-				return ($a > $b) ? -1 : 1;
-			}
 			
-			// ORDER ARRAY OF MONTH-YEAR
-			function orderby_month_and_year($a, $b) {
-//TODO 
-/*
-				if (strcmp($a, "Mon") == 0) 
-					$a = 0;
-				else if (strcmp($a, "Tue") == 0) 
-					$a = 1;				
-
-
-					
-				// if same day, return 0
-				if ($a == $b) {
-					return 0;
-				} 
-					
-				return ($a > $b) ? -1 : 1;
-*/
-			}
-			
-			
+   
+			$weekdays = array("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
 			// sort like
 			// Mon, Tue, Wed, ..., Sat, Sun
-			uksort($movies_per_day, "orderbyweekday");
+			uksort($movies_per_day, function($a, $b) use ($weekdays) {return array_search($a, $weekdays) - array_search($b, $weekdays);});
 
 			
-			// sort like
-			// Jan 2008, March 2008, Jan 2010, Dec 2010, Feb 2011, ..
-			//uksort($movies_per_month, "orderby_month_and_year");
-
-			 
-  
-			//echo (show_php($movies_per_genre));
 			
 			/****************** FUNCTION createGraphData *************************/
 			/* creates array for graph, such as
@@ -568,7 +505,7 @@ $content = tableArray($result);
 		<div id="chart_avg_rating_per_genre"></div>	
 		<div id="pagetitle">
 		<? echo "<h1>Rated ". count($myratings) ."/". count($mymovies) ." seen movies</h1>"; ?>
-		<h2>Movies seen but not rated:</h2>
+
 		<? /**** PRINT MOVIES SEEN BUT NOT RATED ****/
 			$seenmovies = array();
 			for ($j=0;$j<count($mymovies);$j++) {
@@ -598,7 +535,10 @@ $content = tableArray($result);
 				if ($v == false)
 				$notseen[$i++]= $k;
 			}
-			echo (show_php($notseen));
+			if ($notseen != null) {
+				echo "<h2>Movies seen but not rated:</h2>";
+				echo (show_php($notseen));
+			}
 		?>
 		</div>		
 		<? echo $content; ?>	
