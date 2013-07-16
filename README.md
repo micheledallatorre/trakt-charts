@@ -3,7 +3,8 @@ Trakt Charts
 A simple PHP/JavaScript project that 
 
  + imports your movies data from RottenTomatoes or from a local CSV file to Trakt 
- + uses [Trakt API](http://trakt.tv) &amp; [Google Charts](https://developers.google.com/chart/) to show your data.
+ + uses [Trakt API](http://trakt.tv) &amp; [Google Charts](https://developers.google.com/chart/) to show charts of your data
+ + creates a JQuery HTML table with all your seen movies
 
 ## Goals
 
@@ -13,7 +14,8 @@ The goals of this project are the following.
  + enhance your data with [OMDB API](http://www.omdbapi.com/) to get the IMDB ID needed for import into [Trakt](http://trakt.tv/)
  + generate the JSON array to import all your movies and ratings data into Trakt (you can use the [Trakt APIGEE Console](https://apigee.com/trakt/console)
  + create a PHP webpage displaying charts of your Trakt data, e.g. how many movies you watched per week (see example images below)
-
+ + create a [JQuery sortable table](http://tablesorter.com/docs/#Demo) with your seen movies
+ 
 ![graph1](graph1.PNG)
 ![graph2](graph2.PNG)
 
@@ -47,6 +49,7 @@ parseRottenTomatoes.rb > list.csv
 __TODO__
 - [x] import from RottenTomatoes
 - [x] export to JSON format to be imported into Trakt
+- [ ] make it work for shows as well (not only movies)
 - [ ] other features?
 
 
