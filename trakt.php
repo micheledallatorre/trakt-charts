@@ -108,7 +108,7 @@ class Trakt
             array("name" => "actions",   "optional" => true),
             array("name" => "timestamp", "optional" => true)
         ),
-  	/* added by MDT, TO BE CHECKED */
+  	/* added by MDT */
         "/activity/user/movies.json/" => array(
             array("name" => "username"),
             array("name" => "imdbid",     "optional" => true),
