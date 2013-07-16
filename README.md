@@ -4,7 +4,7 @@ A simple PHP/JavaScript project that
 
  + imports your movies data from RottenTomatoes or from a local CSV file to Trakt 
  + uses [Trakt API](http://trakt.tv) &amp; [Google Charts](https://developers.google.com/chart/) to show charts of your data
- + creates a JQuery HTML table with all your seen movies
+ + creates a [JQuery sortable table](http://tablesorter.com/docs/#Demo) with all your seen movies
 
 ## Goals
 
