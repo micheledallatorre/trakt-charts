@@ -108,7 +108,12 @@ class Trakt
             array("name" => "actions",   "optional" => true),
             array("name" => "timestamp", "optional" => true)
         ),
-        
+		/* added by MDT, TO BE CHECKED */
+        "/activity/user/movies.json/" => array(
+            array("name" => "username"),
+            array("name" => "imdbid",     "optional" => true),
+            array("name" => "actions",   "optional" => true)
+        ),        
         /**
          * Calendar methods
          */
@@ -751,21 +756,21 @@ $mypass = $myconfig['config']['pass'];
 /****************************************/
 
 $content = "";
-
-
+  
+  
 $trakt = new Trakt($myAPIkey);
 // set TRUE if pass is already hash1
 $trakt->setAuth($myuser, $mypass, true);
 
 //$tmp = $trakt->showSeasons("The Walking Dead", true);
 //$tmp = $trakt->userLastactivity("mdt");
-
-$mymovies = $trakt->userLibraryMoviesAll($myuser);
+   
+$mymovies = $trakt->userLibraryMoviesAll($myuser);  
 $myratings = $trakt->userRatingsMovies($myuser);
 array_sort_by_column($mymovies, 'tmdb_id');
 //echo (tableArray($mymovies));
 //echo (show_php($mymovies));
-
+ 
 array_sort_by_column($myratings, 'tmdb_id');
 //echo (tableArray($myratings));
 
@@ -785,6 +790,21 @@ for ($i=0; $i<count($myratings); $i++) {
 			if ($myrating_tmdbID == $mymovies_tmdbID) {
 				// get the $mymovies current array element (it's an array!) 
 				$this_movie = $mymovies[$j];
+				
+				//get the IMDB ID of the current movie
+				$this_movie_imdbid = $mymovies[$j]['imdb_id']; 
+				//call the SEEN activity API to get the last seen timestamp for the movie
+				$myUserActivity = $trakt->activityUserMovies($myuser, $this_movie_imdbid, "seen");
+				// search for the START timestamp with RegExp (a number (\d+) after START)
+				$pattern = '/timestamps\":{\"start\":(\d+),.*/';  
+				preg_match($pattern, json_encode($myUserActivity), $matched_array);
+				//get the timestamp
+				$first_seen_timestamp = $matched_array[1];
+				//save it into result array both as timestamp
+				$result[$i]['firstseen_timestamp'] = $first_seen_timestamp; 
+				// and as date
+				$result[$i]['firstseen_date'] = date('Y-m-d H:i:s', $first_seen_timestamp); 
+				
 				// add all its fields to my final merged array
 				foreach ($this_movie as $k=>$v) {
 					$result[$i][$k] = $v; 
@@ -839,15 +859,22 @@ $content = tableArray($result);
 			$movies_per_hour = array();
 			$movies_per_genre = array();
 			$avg_rating_per_genre = array();
+			$movies_per_seen_year = array();
 			
 			for ($i=0; $i<count($result); $i++) {
 				$myrating = $result[$i]['rating_advanced'];
-				$myyear = $result[$i]['year'];
+				$myyear = $result[$i]['year']; 
+				
+				// COMMENTED!!!
 				// timestamp of when the movie was rated, not seen!
-				$mytimestamp = $result[$i]['inserted'];
+				// $mytimestamp =$result[$i]['inserted'];
+				
+				// timestamp from the SEEN activity, i.e. first time the movie was seen
+				$mytimestamp = $result[$i]['firstseen_timestamp'];
 				$mymonth = date("M", $mytimestamp);
 				$myday = date("D", $mytimestamp);
 				$myhour = date("H", $mytimestamp);
+				$myseenyear = date("Y", $mytimestamp);
 				$mygenres = $result[$i]['genres'];
 				
 				foreach ($mygenres as $k => $v) {
@@ -862,6 +889,7 @@ $content = tableArray($result);
 				$movies_per_month[$mymonth] += 1;
 				$movies_per_day[$myday] += 1;
 				$movies_per_hour[$myhour] += 1;
+				$movies_per_seen_year[$myseenyear] += 1;
 			}
 			//normalize sum of rating per genre to get avg rating
 			foreach ($movies_per_genre as $k1 => $v1) {
@@ -997,6 +1025,22 @@ $content = tableArray($result);
 				);
 			echo $chart->draw('chart_movies_per_hour', $options);	
 			
+			/********* graph 8******************/
+			$chart = new Chart('ColumnChart');			
+			$data = createGraphData('hour','# of movies', $movies_per_seen_year);
+			$chart->load($data, 'array');
+			$options = array(
+				'title' => 'Movies seen in year', 
+				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
+				'hAxis' => array('title' => 'Year'),
+				'legend' => 'none',														
+				'is3D' => true, 
+				'width' => 500, 
+				'height' => 400,
+				'colors' => array('purple')
+				);
+			echo $chart->draw('chart_movies_per_seen_year', $options);	
+			
 			
 			/********* graph 6******************/
 			$chart = new Chart('ColumnChart');			
@@ -1039,6 +1083,7 @@ $content = tableArray($result);
 		<div id="chart_movies_per_month"></div>	
 		<div id="chart_movies_per_day"></div>	
 		<div id="chart_movies_per_hour"></div>	
+		<div id="chart_movies_per_seen_year"></div>	
 		<div id="chart_movies_per_genre"></div>	
 		<div id="chart_avg_rating_per_genre"></div>	
 		<div id="pagetitle">
