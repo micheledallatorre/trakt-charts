@@ -155,10 +155,30 @@ array_sort_by_column($mymovies, 'tmdb_id');
 //echo (show_php($mymovies));
  
 array_sort_by_column($myratings, 'tmdb_id');
-//echo (tableArray($myratings));
+//echo (tableArray($myratings));  
+
+//get all IMDB IDs of my seen movies in library
+$allSeenMoviesIMDBIDs = array();
+foreach ($mymovies as $elem) {
+	// insert IMDB ID value into allMoviesIMDBIDs array
+	if (isset($elem['imdb_id'])) {
+		array_push($allSeenMoviesIMDBIDs, $elem['imdb_id']);
+	}  
+}
 
 
-$result = $myratings;
+$result = array();
+for ($i=0; $i<count($myratings); $i++) {
+
+	if (isset($myratings[$i]['tmdb_id'])) {
+		$my_tmdbID = $myratings[$i]['tmdb_id'];
+	}
+	foreach ($myratings[$i] as $k=>$v) {
+		$result[$my_tmdbID][$k] = $v;
+	}
+	
+}
+
 // for each rating 
 for ($i=0; $i<count($myratings); $i++) {
 	// read tmdb_id which is UNIQUE
@@ -167,61 +187,119 @@ for ($i=0; $i<count($myratings); $i++) {
 	for ($j=0; $j<count($mymovies); $j++) {
 		// get tmdb_id for seen movies
 		$mymovies_tmdbID = $mymovies[$j]['tmdb_id'];
-		// since arrays are ordered, check only if one ID is less than the other ID
-		if ($myrating_tmdbID <= $mymovies_tmdbID) {
-			// if they are the same, add fields to the merged array
-			if ($myrating_tmdbID == $mymovies_tmdbID) {
-				// get the $mymovies current array element (it's an array!) 
-				$this_movie = $mymovies[$j];
-								
-				// add all its fields to my final merged array
-				foreach ($this_movie as $k=>$v) {
-					$result[$i][$k] = $v; 
-				}
+		// if TMDB ID are the same, add fields to the merged array
+		if ($myrating_tmdbID == $mymovies_tmdbID) {
+			// get the $mymovies current array element (it's an array!) 
+			$this_movie = $mymovies[$j];
+							
+			// add all its fields to my final merged array
+			foreach ($this_movie as $k=>$v) {
+				$result[$mymovies_tmdbID][$k] = $v; 
+			}
+		} 
+	}	
+}
+  
+
+
+//separator is comma
+$sep = ",";
+// limit for IMDB IDs per API call 
+$url_limit = 100; 
+$arraysize = count($allSeenMoviesIMDBIDs);
+
+$decoded = array();
+//call the SEEN activity API to get the last seen timestamp for the movie 
+// and save it into result array as first seen timestamp and as first seen date
+for($i=0;$i<$arraysize;$i++)	{ 
+	$imdbid_csv_list = "";
+	for ($j=0; $j<$url_limit && $url_limit < $arraysize; $j++) { 
+			//get the IMDB ID of the current movie and increment counter
+			$myimdbid = $allSeenMoviesIMDBIDs[$i++];
+			$imdbid_csv_list = $imdbid_csv_list . $sep . $myimdbid; 
+			$myUserActivity = $trakt->activityUserMovies($myuser, $imdbid_csv_list, "seen?min=1");		
+			//if (isset($myUserActivity['activity'])) {
+				array_push($decoded, $myUserActivity['activity']);
+			//}
+		}
+}					
+//echo(show_php($imdbid_csv_list));  
+//echo(show_php($decoded));  
+
+foreach ($decoded as $elem) {
+	//get the ACTIVITY array, not the TIMESTAMP array
+	// e. g.
+	/*
+	array (
+  'timestamps' => 
+  array (
+    'start' => 1247954400,
+    'end' => 1374046256,
+    'current' => 1374046256,
+  ), 
+  'activity' => 
+  array (
+    0 => 
+    array (
+      'timestamp' => 1295132400,
+      'type' => 'movie',
+      'action' => 'seen',
+      'user' => 
+      array (
+        'username' => 'mdt',
+        'protected' => false,
+      ),
+      'movie' => 
+      array (
+        'title' => 'The Social Network',
+        'year' => 2010,
+        'imdb_id' => 'tt1285016',
+        'tmdb_id' => 37799,
+      ),
+    ),
+    1 => 
+    array (
+      'timestamp' => 1263510000,
+      'type' => 'movie',
+      'action' => 'seen',
+      'user' => 
+      array (
+        'username' => 'mdt',
+        'protected' => false,
+      ),
+      'movie' => 
+      array (
+        'title' => 'Up',
+        'year' => 2009,
+        'imdb_id' => 'tt1049413',
+        'tmdb_id' => 14160,
+      ),
+    ),
+	...
+	*/
+	//if (isset($elem['activity'])) {
+		foreach ($elem['activity'] as $myactivity) {
+			//get the timestamp 
+			if (isset($myactivity['timestamp'])) {
+				$firstseen_timestamp = $myactivity['timestamp'];
+				$firstseen_date = date('Y-m-d H:i:s', $firstseen_timestamp);
+				$mytmdb_id = $myactivity['tmdb_id'];
+				//save it into result array both as timestamp
+				$result[$mytmdb_id]['firstseen_timestamp'] = $firstseen_timestamp; 
+				// and as date
+				$result[$mytmdb_id]['firstseen_date'] = $firstseen_date; 		
 			}
 		}
-	}	
+	//}
 }
 
 
 
 
-
-//call the SEEN activity API to get the last seen timestamp for the movie 
-// and save it into result array as first seen timestamp and as first seen date
-for($i=0;$i<count($result);$i++)	{
-		$elem = $result[$i];
-		
-		foreach ($elem as $key => $value) {
-			// skip if array, i.e. field IMAGES in array result
-			if (!is_array($value)) {
-				if (strcmp($key, "imdb_id") == 0) {
-					//get the IMDB ID of the current movie
-					$this_movie_imdbid = $value; 
-					//call the SEEN activity API to get the last seen timestamp for the movie
-					$myUserActivity = $trakt->activityUserMovies($myuser, $this_movie_imdbid, "seen");
-					// search for the START timestamp with RegExp (a number (\d+) after START)
-					$pattern = '/timestamps\":{\"start\":(\d+),.*/';  
-					preg_match($pattern, json_encode($myUserActivity), $matched_array);
-					//get the timestamp
-					$first_seen_timestamp = $matched_array[1];
-					//save it into result array both as timestamp
-					$result[$i]['firstseen_timestamp'] = $first_seen_timestamp; 
-					// and as date
-					$result[$i]['firstseen_date'] = date('Y-m-d H:i:s', $first_seen_timestamp); 
-				}
-			}
-		}
-}			
-	
-
 //sort by FIRST SEEN timestamp so that all resulting arrays are ordered
 // used in chart MOVIES SEEN PER MONTH (June 2010=>5, May 2011=>2, etc.)
 array_sort_by_column($result, 'firstseen_timestamp');				
-				
-				
-				
-				
+							
 				
 
 $content = tableArray($result);
@@ -271,21 +349,21 @@ $content = tableArray($result);
 			$avg_rating_per_genre = array();
 			$movies_per_seen_year = array();
 			
-			for ($i=0; $i<count($result); $i++) {
-				$myrating = $result[$i]['rating_advanced'];
-				$myyear = $result[$i]['year']; 
+			foreach ($result as $k=>$v) {
+				$myrating = $result[$k]['rating_advanced'];
+				$myyear = $result[$k]['year']; 
 				
 				// COMMENTED!!!
 				// timestamp of when the movie was rated, not seen!
-				// $mytimestamp =$result[$i]['inserted'];
+				// $mytimestamp =$result[$k]['inserted'];
 				
 				// timestamp from the SEEN activity, i.e. first time the movie was seen
-				$mytimestamp = $result[$i]['firstseen_timestamp'];
+				$mytimestamp = $result[$k]['firstseen_timestamp'];
 				$mymonth = date("M", $mytimestamp);
 				$myday = date("D", $mytimestamp);
 				$myhour = date("H", $mytimestamp);
 				$myseenyear = date("Y", $mytimestamp);
-				$mygenres = $result[$i]['genres'];
+				$mygenres = $result[$k]['genres'];
 				
 				foreach ($mygenres as $k => $v) {
 					// discard empty genres!
