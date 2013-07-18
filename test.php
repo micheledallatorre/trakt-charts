@@ -179,6 +179,8 @@ for ($i=0; $i<count($myratings); $i++) {
 	
 }
 
+
+
 // for each rating 
 for ($i=0; $i<count($myratings); $i++) {
 	// read tmdb_id which is UNIQUE
@@ -205,95 +207,62 @@ for ($i=0; $i<count($myratings); $i++) {
 //separator is comma
 $sep = ",";
 // limit for IMDB IDs per API call 
-$url_limit = 100; 
+$url_limit = 50; 
 $arraysize = count($allSeenMoviesIMDBIDs);
-
+$imdbid_csv_list = "";
 $decoded = array();
-//call the SEEN activity API to get the last seen timestamp for the movie 
+$counter = 1;
+// call the SEEN activity API to get the last seen timestamp for the movie 
 // and save it into result array as first seen timestamp and as first seen date
-for($i=0;$i<$arraysize;$i++)	{ 
-	$imdbid_csv_list = "";
-	for ($j=0; $j<$url_limit && $url_limit < $arraysize; $j++) { 
-			//get the IMDB ID of the current movie and increment counter
-			$myimdbid = $allSeenMoviesIMDBIDs[$i++];
-			$imdbid_csv_list = $imdbid_csv_list . $sep . $myimdbid; 
-			$myUserActivity = $trakt->activityUserMovies($myuser, $imdbid_csv_list, "seen?min=1");		
-			//if (isset($myUserActivity['activity'])) {
-				array_push($decoded, $myUserActivity['activity']);
-			//}
+for($i=0;$i<$arraysize && $counter<=$url_limit;$i++)	{ 
+	//get the IMDB ID of the current movie and increment counter
+	$myimdbid = $allSeenMoviesIMDBIDs[$i];
+	$imdbid_csv_list = $imdbid_csv_list . $sep . $myimdbid; 
+	$counter++;
+	if ($counter == $url_limit) {
+		// append "seen?min=1" to get minimal info and be FASTER!
+		$myUserActivity = $trakt->activityUserMovies($myuser, $imdbid_csv_list, "seen?min=1");	
+		foreach ( $myUserActivity['activity'] as $mymovieact) {
+			array_push($decoded, $mymovieact);
 		}
+		//reset counter and imdb csv list
+		$counter=1;
+		$imdbid_csv_list = "";
+	}
 }					
-//echo(show_php($imdbid_csv_list));  
-//echo(show_php($decoded));  
 
-foreach ($decoded as $elem) {
-	//get the ACTIVITY array, not the TIMESTAMP array
-	// e. g.
-	/*
-	array (
-  'timestamps' => 
-  array (
-    'start' => 1247954400,
-    'end' => 1374046256,
-    'current' => 1374046256,
-  ), 
-  'activity' => 
-  array (
-    0 => 
-    array (
-      'timestamp' => 1295132400,
-      'type' => 'movie',
-      'action' => 'seen',
-      'user' => 
-      array (
-        'username' => 'mdt',
-        'protected' => false,
-      ),
-      'movie' => 
-      array (
-        'title' => 'The Social Network',
-        'year' => 2010,
-        'imdb_id' => 'tt1285016',
-        'tmdb_id' => 37799,
-      ),
-    ),
-    1 => 
-    array (
-      'timestamp' => 1263510000,
-      'type' => 'movie',
-      'action' => 'seen',
-      'user' => 
-      array (
-        'username' => 'mdt',
-        'protected' => false,
-      ),
-      'movie' => 
-      array (
-        'title' => 'Up',
-        'year' => 2009,
-        'imdb_id' => 'tt1049413',
-        'tmdb_id' => 14160,
-      ),
-    ),
+/************************
+ARRAY $DECODED:
+*************************
+[array][196]
+  "0"=>[array][5]
+    "timestamp"=>[integer]=[1372370400]
+    "type"=>[string]=[movie]
+    "action"=>[string]=[seen]
+    "user"=>[array][2]
+      "username"=>[string]=[mdt]
+      "protected"=>[boolean]=[]
+    "movie"=>[array][4]
+      "title"=>[string]=[The Break-Up]
+      "year"=>[integer]=[2006]
+      "imdb_id"=>[string]=[tt0452594]
+      "tmdb_id"=>[integer]=[9767]
+  "1"=>[array][5]
+    "timestamp"=>[integer]=[1365285600]
 	...
-	*/
-	//if (isset($elem['activity'])) {
-		foreach ($elem['activity'] as $myactivity) {
-			//get the timestamp 
-			if (isset($myactivity['timestamp'])) {
-				$firstseen_timestamp = $myactivity['timestamp'];
-				$firstseen_date = date('Y-m-d H:i:s', $firstseen_timestamp);
-				$mytmdb_id = $myactivity['tmdb_id'];
-				//save it into result array both as timestamp
-				$result[$mytmdb_id]['firstseen_timestamp'] = $firstseen_timestamp; 
-				// and as date
-				$result[$mytmdb_id]['firstseen_date'] = $firstseen_date; 		
-			}
-		}
-	//}
+*/
+foreach ($decoded as $elem) {
+	//get the timestamp 
+	if (isset($elem['timestamp'])) {
+		$firstseen_timestamp = $elem['timestamp'];
+		$firstseen_date = date('Y-m-d H:i:s', $firstseen_timestamp);
+		$mytmdb_id = $elem['movie']['tmdb_id'];
+		//save it into result array both as timestamp
+		$result[$mytmdb_id]['firstseen_timestamp'] = $firstseen_timestamp; 
+		// and as date
+		$result[$mytmdb_id]['firstseen_date'] = $firstseen_date; 		
+	}
 }
-
-
 
 
 //sort by FIRST SEEN timestamp so that all resulting arrays are ordered
@@ -301,9 +270,8 @@ foreach ($decoded as $elem) {
 array_sort_by_column($result, 'firstseen_timestamp');				
 							
 				
-
 $content = tableArray($result);
-//echo (show_php($result));
+
 ?>
 <html lang="en">
 	<head>
@@ -379,6 +347,7 @@ $content = tableArray($result);
 				$movies_per_hour[$myhour] += 1;
 				$movies_per_seen_year[$myseenyear] += 1;
 			}
+			
 			//normalize sum of rating per genre to get avg rating
 			foreach ($movies_per_genre as $k1 => $v1) {
 				foreach ($sum_rating_per_genre as $k2 => $v2) {
@@ -437,10 +406,16 @@ $content = tableArray($result);
 				}
 				return $res;
 			}		
-
-			$chart = new Chart('ColumnChart');			
-			$data = createGraphData('ratings','# of movies', $movies_per_rating);
-			$chart->load($data, 'array');
+			
+			// function to print Chart
+			function printChart($chart_type, $label1, $label2, $mydata, $options, $css_div_id) {
+				$chart = new Chart($chart_type);			
+				$data = createGraphData($label1,$label2, $mydata);
+				$chart->load($data, 'array');
+				echo $chart->draw($css_div_id, $options);		
+			}
+			
+			/********* CHART Rating distribution ******************/
 			$options = array(
 				'title' => 'Rating distribution', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
@@ -451,14 +426,11 @@ $content = tableArray($result);
 				'height' => 400,
 				'colors' => array('red')
 				);
-			echo $chart->draw('chart_movies_per_rating', $options);
+			printChart("ColumnChart", "ratings", "# of movies", $movies_per_rating, $options, "chart_movies_per_rating");
+	
 			
 			
-			
-			/********* graph 2******************/
-			$chart = new Chart('ColumnChart');			
-			$data = createGraphData('year','# of movies', $movies_years);
-			$chart->load($data, 'array');
+			/********* CHART Year of production for movies******************/
 			$options = array(
 				'title' => 'Year of production for movies', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
@@ -469,13 +441,11 @@ $content = tableArray($result);
 				'height' => 500,
 				'colors' => array('blue')
 				);
-			echo $chart->draw('chart_movies_years', $options);
+			printChart("ColumnChart", "year", "# of movies", $movies_years, $options, "chart_movies_years");
 			
 			
-			/********* graph 3******************/
-			$chart = new Chart('ColumnChart');			
-			$data = createGraphData('month','# of movies', $movies_per_month);
-			$chart->load($data, 'array');
+			
+			/********* CHART Movies seen per month ******************/
 			$options = array(
 				'title' => 'Movies seen per month', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
@@ -486,12 +456,9 @@ $content = tableArray($result);
 				'height' => 500,
 				'colors' => array('purple')
 				);
-			echo $chart->draw('chart_movies_per_month', $options);		
+			printChart("ColumnChart", "month", "# of movies", $movies_per_month, $options, "chart_movies_per_month");			
 			
-			/********* graph 4******************/
-			$chart = new Chart('ColumnChart');			
-			$data = createGraphData('day','# of movies', $movies_per_day);
-			$chart->load($data, 'array');
+			/********* CHART Movies seen per day ******************/
 			$options = array(
 				'title' => 'Movies seen per day', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
@@ -502,12 +469,9 @@ $content = tableArray($result);
 				'height' => 400,
 				'colors' => array('purple')
 				);
-			echo $chart->draw('chart_movies_per_day', $options);	
+			printChart("ColumnChart", "day", "# of movies", $movies_per_day, $options, "chart_movies_per_day");
 			
-			/********* graph 5******************/
-			$chart = new Chart('ColumnChart');			
-			$data = createGraphData('hour','# of movies', $movies_per_hour);
-			$chart->load($data, 'array');
+			/********* CHART Movies seen per hour ******************/
 			$options = array(
 				'title' => 'Movies seen per hour', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
@@ -518,12 +482,9 @@ $content = tableArray($result);
 				'height' => 400,
 				'colors' => array('purple')
 				);
-			echo $chart->draw('chart_movies_per_hour', $options);	
+			printChart("ColumnChart", "hour", "# of movies", $movies_per_hour, $options, "chart_movies_per_hour");
 			
-			/********* graph 8******************/
-			$chart = new Chart('ColumnChart');			
-			$data = createGraphData('hour','# of movies', $movies_per_seen_year);
-			$chart->load($data, 'array');
+			/********* CHART Movies seen in year *****************/		
 			$options = array(
 				'title' => 'Movies seen in year', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
@@ -534,13 +495,10 @@ $content = tableArray($result);
 				'height' => 400,
 				'colors' => array('purple')
 				);
-			echo $chart->draw('chart_movies_per_seen_year', $options);	
+			printChart("ColumnChart", "year", "# of movies", $movies_per_seen_year, $options, "chart_movies_per_seen_year");
 			
 			
-			/********* graph 6******************/
-			$chart = new Chart('ColumnChart');			
-			$data = createGraphData('hour','# of movies', $movies_per_genre);
-			$chart->load($data, 'array');
+			/********* CHART Most rated genres ******************/
 			$options = array(
 				'title' => 'Most rated genres', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
@@ -551,13 +509,10 @@ $content = tableArray($result);
 				'height' => 500,
 				'colors' => array('purple')
 				);
-			echo $chart->draw('chart_movies_per_genre', $options);	
+			printChart("ColumnChart", "genre", "# of movies", $movies_per_genre, $options, "chart_movies_per_genre");
 			
 			
-			/********* graph 7******************/
-			$chart = new Chart('ColumnChart');			
-			$data = createGraphData('genre','avg rating', $avg_rating_per_genre);
-			$chart->load($data, 'array');
+			/********* CHART Average rating per genre ******************/
 			$options = array(
 				'title' => 'Average rating per genre', 
 				'vAxis' => array('title' => 'Average rating', 'minValue' => 0),
@@ -568,7 +523,8 @@ $content = tableArray($result);
 				'height' => 500,
 				'colors' => array('purple')
 				);
-			echo $chart->draw('chart_avg_rating_per_genre', $options);	
+			printChart("ColumnChart", "genre", "avg rating", $avg_rating_per_genre, $options, "chart_avg_rating_per_genre");
+			
 		?>
 		
 	</head>
