@@ -1,4 +1,4 @@
-   <!-- including https://code.google.com/p/php-class-for-google-chart-tools/ -->
+ 	<!-- including https://code.google.com/p/php-class-for-google-chart-tools/ -->
 		<?php		
 
 
@@ -207,9 +207,9 @@
 				);
 			printChart("ColumnChart", "hour", "# of movies", $movies_per_hour, $options, "chart_movies_per_hour");
 			
-			/********* CHART Movies seen in year *****************/		
+			/********* CHART Movies seen per year *****************/		
 			$options = array(
-				'title' => 'Movies seen in year', 
+				'title' => 'Movies seen per year', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
 				'hAxis' => array('title' => 'Year'),
 				'legend' => 'none',														
@@ -221,9 +221,9 @@
 			printChart("ColumnChart", "year", "# of movies", $movies_per_seen_year, $options, "chart_movies_per_seen_year");
 			
 			
-			/********* CHART Most rated genres ******************/
+			/********* CHART Movies per genre ******************/
 			$options = array(
-				'title' => 'Most rated genres', 
+				'title' => 'Movies per genre', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
 				'hAxis' => array('title' => 'Genre'),
 				'legend' => 'none',														
