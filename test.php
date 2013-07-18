@@ -148,6 +148,7 @@ $trakt->setAuth($myuser, $mypass, true);
 //$tmp = $trakt->showSeasons("The Walking Dead", true);
 //$tmp = $trakt->userLastactivity("mdt");
    
+// TODO or use userLibraryMoviesWatched???
 $mymovies = $trakt->userLibraryMoviesAll($myuser);  
 $myratings = $trakt->userRatingsMovies($myuser);
 array_sort_by_column($mymovies, 'tmdb_id');
@@ -157,27 +158,32 @@ array_sort_by_column($mymovies, 'tmdb_id');
 array_sort_by_column($myratings, 'tmdb_id');
 //echo (tableArray($myratings));  
 
-//get all IMDB IDs of my seen movies in library
-$allSeenMoviesIMDBIDs = array();
+//get all TMDB IDs of my seen movies in library
+// IMPORTANT: use TMDB ID, NOT IMDB IDS, because some movies are missing it! (e.g. Field of Vision, 2011)
+$allSeenMoviesTMDBIDs = array();
 foreach ($mymovies as $elem) {
 	// insert IMDB ID value into allMoviesIMDBIDs array
-	if (isset($elem['imdb_id'])) {
-		array_push($allSeenMoviesIMDBIDs, $elem['imdb_id']);
+	if (isset($elem['tmdb_id'])) {
+		array_push($allSeenMoviesTMDBIDs, $elem['tmdb_id']);
 	}  
 }
 
-
-$result = array();
-for ($i=0; $i<count($myratings); $i++) {
-
-	if (isset($myratings[$i]['tmdb_id'])) {
-		$my_tmdbID = $myratings[$i]['tmdb_id'];
+$result= array();
+// copy all fields from input array into 
+// $result[TMDB ID][inputkey]=>inputvalue PASSED BY REFERENCE NOT VALUE!
+function copyIntoResultArray($inputarr, &$res) {
+	for ($i=0; $i<count($inputarr); $i++) {
+		if (isset($inputarr[$i]['tmdb_id'])) {
+			$my_tmdbID = $inputarr[$i]['tmdb_id'];
+		}
+		foreach ($inputarr[$i] as $k=>$v) {
+			$res[$my_tmdbID][$k] = $v;
+		}
 	}
-	foreach ($myratings[$i] as $k=>$v) {
-		$result[$my_tmdbID][$k] = $v;
-	}
-	
 }
+
+//copy ratings array into result array
+copyIntoResultArray($myratings, $result);
 
 
 
@@ -203,32 +209,43 @@ for ($i=0; $i<count($myratings); $i++) {
 }
   
 
+//IF there are no ratings, copy MOVIES array into RESULT
+// so that I can still show the table with the seen movies
+if (count($myratings) == 0) {
+	copyIntoResultArray($mymovies, $result);
+}
+
 
 //separator is comma
 $sep = ",";
 // limit for IMDB IDs per API call 
-$url_limit = 50; 
-$arraysize = count($allSeenMoviesIMDBIDs);
-$imdbid_csv_list = "";
+$url_limit = 100; 
+$arraysize = count($allSeenMoviesTMDBIDs);
+$tmdbid_csv_list = "";
 $decoded = array();
 $counter = 1;
 // call the SEEN activity API to get the last seen timestamp for the movie 
 // and save it into result array as first seen timestamp and as first seen date
 for($i=0;$i<$arraysize && $counter<=$url_limit;$i++)	{ 
-	//get the IMDB ID of the current movie and increment counter
-	$myimdbid = $allSeenMoviesIMDBIDs[$i];
-	$imdbid_csv_list = $imdbid_csv_list . $sep . $myimdbid; 
-	$counter++;
-	if ($counter == $url_limit) {
+	//get the IMDB ID of the current movie
+	$mytmdbid = $allSeenMoviesTMDBIDs[$i];
+	$tmdbid_csv_list = $tmdbid_csv_list . $sep . $mytmdbid; 
+	// if reached url limit, or if last iteration on the array 
+	// (e.g. last N elements, where N < url_limit)
+	if ($counter == $url_limit || ($i==($arraysize-1)) ) {
 		// append "seen?min=1" to get minimal info and be FASTER!
-		$myUserActivity = $trakt->activityUserMovies($myuser, $imdbid_csv_list, "seen?min=1");	
-		foreach ( $myUserActivity['activity'] as $mymovieact) {
+		$myUserActivity = $trakt->activityUserMovies($myuser, $tmdbid_csv_list, "seen?min=1");	
+		foreach ($myUserActivity['activity'] as $mymovieact) {
 			array_push($decoded, $mymovieact);
 		}
 		//reset counter and imdb csv list
 		$counter=1;
-		$imdbid_csv_list = "";
+		$tmdbid_csv_list = "";
+		//sleep a bit, to avoid missing responses from API call!
+		//sleep(5);
 	}
+	//else increment counter
+	else $counter++;
 }					
 
 /************************
@@ -262,6 +279,8 @@ foreach ($decoded as $elem) {
 		// and as date
 		$result[$mytmdb_id]['firstseen_date'] = $firstseen_date; 		
 	}
+	else 
+		echo "TIMESTAMP MISSING FOR MOVIE WITH TMDBID: ".$elem['movie']['tmdb_id'];
 }
 
 
