@@ -11,7 +11,15 @@
 			unset($_SESSION['value']);
 			loadAndDraw($result);
 
+			//function to reorder array
+			function array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
+				$sort_col = array();
+				foreach ($arr as $key=> $row) {
+					$sort_col[$key] = $row[$col];
+				}
 
+				array_multisort($sort_col, $dir, $arr);
+			}
 
 
 			// OUTPUT: 
@@ -85,6 +93,11 @@
 				}
 			} 
 			
+
+			
+			//reorder by avg rating ASC
+			array_sort_by_column($avg_rating_per_genre, 1);
+			array_sort_by_column($movies_per_genre, 1);
 			
    
 			$weekdays = array("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
@@ -142,12 +155,12 @@
 			$options = array(
 				'title' => 'Rating distribution', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
-				'hAxis' => array('title' => 'Ratings'),
+				'hAxis' => array('title' => 'Ratings', 'maxValue' => 10),
 				'legend' => 'none',														
 				'is3D' => true, 
-				'width' => 500, 
+				'width' => 800, 
 				'height' => 400,
-				'colors' => array('red')
+				'colors' => array('CC0000')
 				);
 			printChart("ColumnChart", "ratings", "# of movies", $movies_per_rating, $options, "chart_movies_per_rating");
 	
@@ -157,12 +170,12 @@
 			$options = array(
 				'title' => 'Year of production for movies', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
-				'hAxis' => array('title' => 'Year'),
+				'hAxis' => array('title' => 'Year', 'format' => '####'),
 				'legend' => 'none',														
 				'is3D' => true, 
 				'width' => 1000, 
-				'height' => 500,
-				'colors' => array('blue')
+				'height' => 300,
+				'colors' => array('660099')
 				);
 			printChart("ColumnChart", "year", "# of movies", $movies_years, $options, "chart_movies_years");
 			
@@ -176,10 +189,24 @@
 				'legend' => 'none',														
 				'is3D' => true, 
 				'width' => 1000, 
-				'height' => 500,
-				'colors' => array('purple')
+				'height' => 400,
+				'colors' => array('485C5A')
 				);
 			printChart("ColumnChart", "month", "# of movies", $movies_per_month, $options, "chart_movies_per_month");			
+			
+
+			/********* CHART Movies seen per hour ******************/
+			$options = array(
+				'title' => 'Movies seen per hour', 
+				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
+				'hAxis' => array('title' => 'Hour'),
+				'legend' => 'none',														
+				'is3D' => true, 
+				'width' => 400, 
+				'height' => 400,
+				'colors' => array('#6599FF')
+				);
+			printChart("ColumnChart", "hour", "# of movies", $movies_per_hour, $options, "chart_movies_per_hour");
 			
 			/********* CHART Movies seen per day ******************/
 			$options = array(
@@ -188,35 +215,24 @@
 				'hAxis' => array('title' => 'Day'),
 				'legend' => 'none',														
 				'is3D' => true, 
-				'width' => 500, 
+				'width' => 400, 
 				'height' => 400,
-				'colors' => array('purple')
+				'colors' => array('#3465a4')
 				);
 			printChart("ColumnChart", "day", "# of movies", $movies_per_day, $options, "chart_movies_per_day");
 			
-			/********* CHART Movies seen per hour ******************/
-			$options = array(
-				'title' => 'Movies seen per hour', 
-				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
-				'hAxis' => array('title' => 'Hour'),
-				'legend' => 'none',														
-				'is3D' => true, 
-				'width' => 500, 
-				'height' => 400,
-				'colors' => array('purple')
-				);
-			printChart("ColumnChart", "hour", "# of movies", $movies_per_hour, $options, "chart_movies_per_hour");
 			
 			/********* CHART Movies seen per year *****************/		
 			$options = array(
 				'title' => 'Movies seen per year', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
-				'hAxis' => array('title' => 'Year'),
+				// use 4 digits to represents years, e.g. "2012", NOT "2,012"
+				'hAxis' => array('title' => 'Year', 'format' => '####'),
 				'legend' => 'none',														
 				'is3D' => true, 
-				'width' => 500, 
+				'width' => 400, 
 				'height' => 400,
-				'colors' => array('purple')
+				'colors' => array('#204a87')
 				);
 			printChart("ColumnChart", "year", "# of movies", $movies_per_seen_year, $options, "chart_movies_per_seen_year");
 			
@@ -225,12 +241,12 @@
 			$options = array(
 				'title' => 'Movies per genre', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
-				'hAxis' => array('title' => 'Genre'),
+				'hAxis' => array('title' => 'Genre', 'slantedTextAngle' => 40),
 				'legend' => 'none',														
 				'is3D' => true, 
 				'width' => 1000, 
 				'height' => 500,
-				'colors' => array('purple')
+				'colors' => array('#8C489F')
 				);
 			printChart("ColumnChart", "genre", "# of movies", $movies_per_genre, $options, "chart_movies_per_genre");
 			
@@ -239,12 +255,12 @@
 			$options = array(
 				'title' => 'Average rating per genre', 
 				'vAxis' => array('title' => 'Average rating', 'minValue' => 0),
-				'hAxis' => array('title' => 'Genre'),
+				'hAxis' => array('title' => 'Genre', 'slantedTextAngle' => 40),
 				'legend' => 'none',														
 				'is3D' => true, 
 				'width' => 1000, 
 				'height' => 500,
-				'colors' => array('purple')
+				'colors' => array('097054')
 				);
 			printChart("ColumnChart", "genre", "avg rating", $avg_rating_per_genre, $options, "chart_avg_rating_per_genre");
 			}
@@ -257,29 +273,75 @@
 		<html lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="jquery.tablesorter.js" type="text/javascript" charset="utf-8"></script>
-		<link rel="stylesheet" href="themes/blue/style.css" type="text/css" media="print, projection, screen" />
+		<style type="text/css">
 		
-		<script type="text/javascript" charset="utf-8">
-							$(document).ready(function() 
-							{ 
-								$("#myTable").tablesorter(); 
-									} 
-							); 
-		</script>
-		
-	
-		
+			#content {
+			}
+				
+			#chart_movies_per_rating {				
+				margin:auto; 
+				width:800px;
+				display:block;  
+				text-align:center;
+			}
+			
+			#chart_movies_years {
+				margin:auto; 
+				display:block;
+				width:1000px;
+			}
+			
+			#chart_movies_per_month{
+				margin:auto; 
+				display:block;
+				width:1000px;
+			}
+			
+			/*same row*/
+			#chart_movies_per_hour {
+				display:inline-block;
+			}
+
+			#chart_movies_per_seen_year {
+				display:inline-block;
+			}
+
+			#chart_movies_per_day{
+				display:inline-block;
+			}
+			/*end same row*/
+			
+			#chart_movies_per_genre{
+				margin:auto; 
+				display:block;
+				width:1000px;
+			}
+			
+			#chart_avg_rating_per_genre{
+				margin:auto; 
+				display:block;
+				width:1000px;
+			}			
+			.singlerow {
+			}
+	</style>
 	</head>
-	<body id="index">	
+	<div id="content">
+
 		<div id="chart_movies_per_rating"></div>	
-		<div id="chart_movies_years"></div>	
+		
+		<div class="singlerow">
+			<div id="chart_movies_per_hour"></div>	
+			<div id="chart_movies_per_day"></div>	
+			<div id="chart_movies_per_seen_year"></div>
+		</div>
+		
 		<div id="chart_movies_per_month"></div>	
-		<div id="chart_movies_per_day"></div>	
-		<div id="chart_movies_per_hour"></div>	
-		<div id="chart_movies_per_seen_year"></div>	
+		
 		<div id="chart_movies_per_genre"></div>	
 		<div id="chart_avg_rating_per_genre"></div>	
-			</body>
+		
+		<div id="chart_movies_years"></div>	
+		
+		</div>
 </html>
