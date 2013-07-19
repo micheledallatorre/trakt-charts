@@ -85,20 +85,36 @@
 					//check the genre is the same
 					if ($k1 == $k2) {
 					// get avg rating per genre
-					// round to 1 decimal only, e.g. 
+					// round to 1 decimal only, e.g.  
 					// avg rating = 6,7
 					$mygenrating = round($v2/$v1, 1);
-					$avg_rating_per_genre[$k1] = $mygenrating;
+					$avg_rating_per_genre[$k1] = $mygenrating;  
 					}
 				}
 			} 
 			
 
-			
+			 
 			//reorder by avg rating ASC
 			array_sort_by_column($avg_rating_per_genre, 1);
 			array_sort_by_column($movies_per_genre, 1);
-			
+			   
+
+			for($i=0; $i<count($movies_per_rating);$i++) {
+				if (!isset($movies_per_rating[$i])) {
+					$movies_per_rating[$i] = 0;
+				}
+			}
+
+			foreach($movies_per_rating as $k=>$v) {
+			$mykey =" ".$k;
+			$newarr[$mykey]=$v;
+			}
+		//array_sort_by_column($newarr, 1);
+$movies_per_rating = $newarr;
+ksort($movies_per_rating);
+			//var_dump($movies_per_rating);
+
    
 			$weekdays = array("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
 			// sort like
