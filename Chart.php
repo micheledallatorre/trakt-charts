@@ -36,7 +36,9 @@ class Chart {
                 $output = '';
                 // start a code block
                 $output .= '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'."\n";
-                $output .= '<script type="text/javascript">google.load(\'visualization\', \'1.0\', {\'packages\':[\'corechart\']});</script>'."\n";
+        			//MDT added
+				// using 1.1 instead of 1.0 to fix column width bug
+                $output .= '<script type="text/javascript">google.load(\'visualization\', \'1.1\', {\'packages\':[\'corechart\']});</script>'."\n";
                 
                 return $output;
         }
