@@ -60,7 +60,11 @@ function tableArray($array) {
 			$text = $text .  "</tr>\n</thead>\n<tbody>\n";
 		}
 
-		$text = $text .  "<tr>\n";
+		//change CSS style is row is odd or oven
+		if ($i%2 == 1) 
+			$text = $text .  "<tr>\n";
+		elseif ($i%2 == 0)
+			$text = $text .  "<tr class=\"odd\">\n";
 
 		$rownumber = $i+1;
 		// print row number in first cell
@@ -123,7 +127,7 @@ function tableArray($array) {
 			}
 			$text = $text .  "</td>\n";
 		}	
-		$text = $text .  "</tr>\n";
+		$text = $text .  "</tr>\n"; 
 	}
 	$text = $text .  "</tbody>\n";
 	$text = $text .  "</table>\n";
@@ -224,7 +228,7 @@ $arraysize = count($allSeenMoviesTMDBIDs);
 $tmdbid_csv_list = "";
 $decoded = array();
 $counter = 1;
-// call the SEEN activity API to get the last seen timestamp for the movie 
+// call the SEEN activity API to get the last seen timestamp for the movie 	
 // and save it into result array as first seen timestamp and as first seen date
 for($i=0;$i<$arraysize && $counter<=$url_limit;$i++)	{ 
 	//get the IMDB ID of the current movie
@@ -306,9 +310,21 @@ $content = tableArray($result);
 									} 
 							); 
 		</script>
-		
-	
-		
+	<style type="text/css">
+		#pagetitle {
+			text-align:center;
+		}
+		#mychartlogo {
+		/*
+			background-image: url(images/bar-chart-icon.png) ;
+			display: block;			
+			height: 200px;
+			width: 200px;
+			text-indent: 50px;
+			*/
+			text-align:center;
+		}
+	</style>	
 	</head>
 	<body id="index">	
 		<div id="chart_movies_per_rating"></div>	
@@ -320,7 +336,6 @@ $content = tableArray($result);
 		<div id="chart_movies_per_genre"></div>	
 		<div id="chart_avg_rating_per_genre"></div>	
 		<div id="pagetitle">
-		<? echo "<h1>Rated ". count($myratings) ."/". count($mymovies) ." seen movies</h1>"; ?>
 
 		<? /**** PRINT MOVIES SEEN BUT NOT RATED ****/
 			$seenmovies = array();
@@ -358,11 +373,17 @@ $content = tableArray($result);
 		?>
 		</div>		
 		<? 
-		
+
 		session_start();
 		$_SESSION['mydata'] = $result; 
 		//print link
-		echo "<a href=\"mycharts.php\">GRAFICI</\a>";
+		echo "
+				<div id=\"mychartlogo\">
+				<h2>Rated ". count($myratings) ."/". count($mymovies) ." seen movies</h2>
+					<a href=\"mycharts.php\">
+						<img src=\"images/bar-chart-icon.png\" width=\"80px\" height=\"80px\">
+					</a>
+				</div>";
 		
 		//print table
 		echo $content; 
