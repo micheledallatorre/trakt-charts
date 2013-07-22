@@ -46,12 +46,27 @@
 			 $movies_per_genre = array();
 			 $avg_rating_per_genre = array();
 			 $movies_per_seen_year = array();
+			 
+			 /*calculate AVG TOTAL RATING */
+			 $my_sum_of_ratings = 0;
+			 $rated_movies = 0;
+			 /*calculate AVG SEEN PER YEAR */
+			 $sum_of_seen_per_year = 0;
+			 $seen_per_year  = 0;
+			 /*calculate AVG SEEN PER MONTH */
+			 $sum_of_seen_per_month = 0;
+			 $seen_per_month  = 0;
 			
-			function loadAndDraw($result) {
+		function loadAndDraw($result) {
 			foreach ($result as $k=>$v) {
 				$myrating = $result[$k]['rating_advanced'];
 				$myyear = $result[$k]['year']; 
 				
+				if (isset($myrating)) {
+					$my_sum_of_ratings += $myrating;
+					$rated_movies++;
+				}
+								
 				// COMMENTED!!!
 				// timestamp of when the movie was rated, not seen!
 				// $mytimestamp =$result[$k]['inserted'];
@@ -78,6 +93,20 @@
 				$movies_per_hour[$myhour] += 1;
 				$movies_per_seen_year[$myseenyear] += 1;
 			}
+			
+			// calculate average rating overall
+			$avg_total_rating = round($my_sum_of_ratings / $rated_movies, 1);
+			
+			// calculate average seen per year 
+			$sum_of_seen_per_year += count($result);
+			$seen_per_year  = count($movies_per_seen_year);
+			$avg_total_seen_per_year = round($sum_of_seen_per_year / $seen_per_year, 1);	
+			
+			// calculate average seen per month 
+			$sum_of_seen_per_month += count($result);
+			$seen_per_month  = count($movies_per_month);
+			$avg_total_seen_per_month = round($sum_of_seen_per_month / $seen_per_month, 1);			
+			
 			
 			//normalize sum of rating per genre to get avg rating
 			foreach ($movies_per_genre as $k1 => $v1) {
@@ -167,9 +196,10 @@ ksort($movies_per_rating);
 				echo $chart->draw($css_div_id, $options);		
 			}
 			
+			
 			/********* CHART Rating distribution ******************/
 			$options = array(
-				'title' => 'Rating distribution', 
+				'title' => 'Rating distribution (avg rating: ' . $avg_total_rating .' for '.$rated_movies.' movies)', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
 				'hAxis' => array('title' => 'Ratings', 'maxValue' => 10),
 				'legend' => 'none',														
@@ -199,7 +229,7 @@ ksort($movies_per_rating);
 			
 			/********* CHART Movies seen per month ******************/
 			$options = array(
-				'title' => 'Movies seen per month', 
+				'title' => 'Movies seen per month (avg: '.$avg_total_seen_per_month.' movies a month)', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
 				'hAxis' => array('title' => 'Month'),
 				'legend' => 'none',														
@@ -240,7 +270,7 @@ ksort($movies_per_rating);
 			
 			/********* CHART Movies seen per year *****************/		
 			$options = array(
-				'title' => 'Movies seen per year', 
+				'title' => 'Movies seen per year (avg: '.$avg_total_seen_per_year.' movies a year)', 
 				'vAxis' => array('title' => '# of movies', 'minValue' => 0),
 				// use 4 digits to represents years, e.g. "2012", NOT "2,012"
 				'hAxis' => array('title' => 'Year', 'format' => '####'),
