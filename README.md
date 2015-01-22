@@ -6,6 +6,11 @@ A simple PHP/JavaScript project that
  + uses [Trakt API](http://trakt.tv) &amp; [Google Charts](https://developers.google.com/chart/) to show charts of your data
  + creates a [JQuery sortable table](http://tablesorter.com/docs/#Demo) with all your seen movies
 
+## Description and architecture
+A project to import your movies data into the Trakt community, produce interactive movie charts (e.g. movies rating distribution, movies seen per day/month/year, movies by genre/year of production) and display sortable movies tables (e.g. watched movies). 
+Ruby script development to automatically parse RottenTomatoes rankings webpage and generate a CSV file. 
+PHP application development and integration with existing API (such as OMDB and Trakt API), interactive graph generation via Google Charts and sortable table creation via JQuery.
+
 ## Goals
 
 The goals of this project are the following.
